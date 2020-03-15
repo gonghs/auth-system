@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="common/tableLayout">
+<head>
+    <title>用户管理</title>
+    <style>
+        #searchDiv .am-form-group {
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+<th:block layout:fragment="title">
+    角色列表
+</th:block>
+<th:block layout:fragment="custom-js">
+    <script>
+        let tableServer = new TableServer({
+            tableDiv: $('#tableDiv'),
+            searchDiv: $('#searchDiv'),
+            columnsSearch: true,
+            openChoose: true,
+            tableDataUrl: baseUrl + 'dataTablePage'
+        });
+        let operateServer = new OperateServer({
+            operateDiv: $('#operate')
+        });
+        let columnsConfig = [
+            {
+                title: '角色名称',
+                data: 'roleName',
+                searchable: true
+            },
+            {
+                title: '角色描述',
+                data: 'desc',
+                searchable: true
+            },
+            {
+                title: '数据状态',
+                data: 'dataStatus',
+                searchable: true
+            },
+            {
+                title: '操作',
+                data: 'id',
+                defaultValue: '',
+                createdCell: function (td, cellData, rowData) {
+                    let operationDiv = $('<div class="tpl-table-black-operation"></div>');
+                    operationDiv.append(JqueryUtils.createAIncludeI("编辑", "am-icon-pencil", function () {
+                        operateServer.openEdit(rowData, 'update');
+                    }));
+                    $(td).html(operationDiv);
+                }
+            }
+        ];
+        $(function () {
+            tableServer.build(columnsConfig);
+            operateServer.build([{key: 'roleName', label: '角色名称', required: true}, {
+                key: 'desc',
+                label: '角色描述',
+                required: true
+            }]);
+        });
+    </script>
+</th:block>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="~{common/base-css.html::htmlhead}"></div>
+    <title>首页</title>
+    <style>
+        .content {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{common/header.html::header}"></div>
+
+<div class="am-cf admin-main">
+    <!-- sidebar start -->
+    <div th:replace="~{common/sidebar.html::sidebar}"></div>
+    <!-- sidebar end -->
+
+    <!-- content start -->
+    <div class="admin-content">
+        <div class="admin-content-body">
+            <!--            <div class="am-cf am-padding">-->
+            <!--                <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">首页</strong> /-->
+            <!--                    <small>一些常用模块</small>-->
+            <!--                </div>-->
+            <!--            </div>-->
+            <iframe src="/firstPage" class="content"></iframe>
+        </div>
+    </div>
+    <!-- content end -->
+</div>
+
+<footer>
+    <hr>
+    <p class="am-padding-left">但见泪痕湿,不知心恨谁 @maple</p>
+</footer>
+<div th:replace="~{common/base-js.html::javascriptHtml}"></div>
+<!-- 页面高度监听  保证只出现一个滚动条且iframe能够完整展示 -->
+<script type="text/javascript" th:src="@{js/admin/height-listener.js}"></script>
+<!-- 菜单渲染 -->
+<script type="text/javascript" th:src="@{js/admin/menu.js}"></script>
+<script type="application/javascript">
+    $(document).ready(function () {
+        // 护眼模式
+        $('#eyeShield').on('click', function () {
+            changeTheme();
+        })
+    });
+</script>
+</body>
+</html>

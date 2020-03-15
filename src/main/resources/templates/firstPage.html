@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="common/layout">
+<head>
+    <link rel="stylesheet" th:href="@{/common/custom/calculate/calculator.css}"/>
+    <title>首页</title>
+    <style>
+        th{
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <!-- 内容区域 -->
+    <div class="tpl-content-wrapper">
+        <div class="row-content am-cf">
+            <div class="row am-cf">
+                <div class="am-u-sm-12 am-u-md-8">
+                    <div class="widget am-cf am-text-center">
+                        <div class="widget-head am-cf">
+                            <div class="widget-title am-fl">
+                                <span id="today"></span>
+                            </div>
+                        </div>
+                        <div class="widget-body-md widget-body am-fr">
+                            <div class="clock" style="margin:2em;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="am-u-sm-12 am-u-md-4">
+                    <div class="widget am-cf am-text-center">
+                        <div class="widget-head am-cf">
+                            <div class="widget-title am-fl">工具箱</div>
+                        </div>
+                        <div class="widget-body widget-body-md am-fr">
+                            <table style="width: 100%;height: 100%;text-align: center;">
+                                <tr>
+                                    <th>
+                                        <div style="cursor:pointer"
+                                             data-am-modal="{target: '#calculatorModal', closeViaDimmer: 0, width: 300, height: 360}">
+                                            <img th:src="@{/images/calculator.png}" style="width: 60px" alt="计算器"
+                                                 src="">
+                                        </div>
+                                        <small>计算器</small>
+                                    </th>
+                                    <th>
+                                        <div style="cursor:pointer"
+                                             data-am-modal="{target: '#weatherModal', closeViaDimmer: 0, width: 900, height: 225}">
+                                            <img th:src="@{/images/weather.png}" style="width: 60px" alt="天气" src="">
+                                        </div>
+                                        <small>天气</small>
+                                    </th>
+                                    <th>
+                                        <div style="cursor:pointer"
+                                             data-am-modal="{target: '#memoModal', closeViaDimmer: 0, width: 800, height: 600}">
+                                            <img th:src="@{/images/notepad.png}" style="width: 60px" alt="备忘录" src="">
+                                        </div>
+                                        <small>备忘录</small>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!--        <div class="row am-cf">-->
+            <!--            <div class="am-u-sm-12 am-u-md-12 am-u-lg-4 widget-margin-bottom-lg ">-->
+            <!--                <div class="tpl-user-card am-text-center widget-body-lg">-->
+            <!--                    <div class="tpl-user-card-title">-->
+            <!--                        月度最佳员工-->
+            <!--                    </div>-->
+            <!--                    <img class="achievement-image" src="" alt="" id="bestImg">-->
+            <!--                    <div class="achievement-subheading" id="bestName">-->
+
+            <!--                    </div>-->
+            <!--                    <div class="achievement-description">-->
+            <!--                        再接再厉，勇创新高！-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--            </div>-->
+
+            <!--            <div class="am-u-sm-12 am-u-md-12 am-u-lg-4 widget-margin-bottom-lg">-->
+            <!--                <div class="widget am-cf widget-body-lg">-->
+            <!--                    <div class="widget-body  am-fr">-->
+            <!--                        <div class="am-scrollable-horizontal ">-->
+            <!--                            <div class="widget-head am-cf">-->
+            <!--                                <div class="widget-title am-fl">站内信</div>-->
+            <!--                            </div>-->
+            <!--                            <div class="widget-body widget-body-md am-fr">-->
+            <!--                                <p id="messageP">暂无最新信息</p>-->
+            <!--                                <span id="MessageRealnameS" style="float: right"></span><br/>-->
+            <!--                                <span id="MessageSendTimeS" style="float: right"></span>-->
+            <!--                            </div>-->
+            <!--                        </div>-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--            </div>-->
+
+            <!--            <div class="am-u-sm-12 am-u-md-12 am-u-lg-4 widget-margin-bottom-lg">-->
+            <!--                <div class="widget am-cf widget-body-lg">-->
+            <!--                    <div class="widget-body  am-fr">-->
+            <!--                        <div class="am-scrollable-horizontal ">-->
+            <!--                            <div class="widget-head am-cf">-->
+            <!--                                <div class="widget-title am-fl">公告板</div>-->
+            <!--                            </div>-->
+            <!--                            <div class="widget-body widget-body-md am-fr">-->
+            <!--                                <p id="noticeP">暂无最新信息</p>-->
+            <!--                                <span id="NoticeRealnameS" style="float: right"></span><br/>-->
+            <!--                                <span id="NoticeSendTimeS" style="float: right"></span>-->
+
+            <!--                            </div>-->
+            <!--                        </div>-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--            </div>-->
+            <!--        </div>-->
+            <!--    </div>-->
+
+            <div class="am-modal am-modal-no-btn" tabindex="-1" id="calculatorModal">
+                <div class="am-modal-dialog">
+                    <div class="am-modal-hd" style="text-align: center">
+                        <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+                        简易计算器
+                    </div>
+                    <div class="am-modal-bd">
+                        <br/>
+                        <div id="calculator">
+                            <input type="text" id="input-box" value="0" size="21" maxlength="21" readonly="readonly"/>
+                            <div id="btn-list">
+                                <div onclick="operator('clear')" class=" btn-30 btn-radius color-red clear-margin-left">
+                                    C
+                                </div>
+                                <div onclick="operator('opposite')" class=" btn-30 btn-radius color-blue">+/-</div>
+                                <div onclick="operator('percent')" class=" btn-30 btn-radius color-blue">%</div>
+                                <div onclick="operator('backspace')" class=" btn-70 btn-radius color-red font-14">←
+                                </div>
+                                <div onclick="type2Input('7')" class=" btn-30 btn-radius clear-margin-left">7</div>
+                                <div onclick="type2Input('8')" class=" btn-30 btn-radius">8</div>
+                                <div onclick="type2Input('9')" class=" btn-30 btn-radius">9</div>
+                                <div onclick="operator('plus')" class=" btn-30 btn-radius color-blue font-14">+</div>
+                                <div onclick="operator('minus')" class=" btn-30 btn-radius color-blue font-14">-</div>
+                                <div onclick="type2Input('4')" class=" btn-30 btn-radius clear-margin-left">4</div>
+                                <div onclick="type2Input('5')" class=" btn-30 btn-radius">5</div>
+                                <div onclick="type2Input('6')" class=" btn-30 btn-radius">6</div>
+                                <div onclick="operator('multiply')" class=" btn-30 btn-radius color-blue font-14">×
+                                </div>
+                                <div onclick="operator('divide')" class=" btn-30 btn-radius color-blue font-12">÷</div>
+                                <div onclick="type2Input('1')" class=" btn-30 btn-radius clear-margin-left">1</div>
+                                <div onclick="type2Input('2')" class=" btn-30 btn-radius">2</div>
+                                <div onclick="type2Input('3')" class=" btn-30 btn-radius">3</div>
+                                <div onclick="operator('pow')" class=" btn-30 btn-radius color-blue font-14">×²</div>
+                                <div onclick="operator('sqrt')" class=" btn-30 btn-radius color-blue font-12">√</div>
+                                <div onclick="type2Input('0')" class=" btn-70 btn-radius clear-margin-left">0</div>
+                                <div onclick="type2Input('.')" class=" btn-30 btn-radius">.</div>
+                                <div onclick="operator('result')" class=" btn-70 btn-radius color-red font-14">=</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 备忘录 -->
+            <div class="am-modal am-modal-no-btn" tabindex="-1" id="memoModal">
+                <div class="am-modal-dialog">
+                    <div class="am-modal-hd">
+                        <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+                    </div>
+                    <div class="am-modal-bd">
+                        <div id="todoBody">
+                            <section class="todo-body">
+                                <header class="header">
+                                    <h1>备忘录</h1>
+                                    <input class="new-todo"
+                                           autofocus autocomplete="off"
+                                           placeholder="想要记录一件什么事?">
+                                </header>
+                                <section class="main">
+                                    <input class="toggle-all" type="checkbox" v-model="allDone">
+                                    <ul class="todo-list">
+                                        <li class="todo editing">
+                                            <div class="view">
+                                                <input class="toggle" type="checkbox"
+                                                       style="left: 5px;">
+                                                <label>11</label>
+                                                <button class="destroy"></button>
+                                            </div>
+                                            <input class="edit" type="text">
+                                        </li>
+                                        <li class="todo completed">
+                                            <div class="view">
+                                                <input class="toggle" type="checkbox"
+                                                       style="left: 5px;">
+                                                <label>11</label>
+                                                <button class="destroy"></button>
+                                            </div>
+                                            <input class="edit" type="text">
+                                        </li>
+                                    </ul>
+                                </section>
+<!--                                <footer class="footer">-->
+<!--                                    <button class="clear-completed" style="bottom: 10px;">-->
+<!--                                        清除所有已完成的-->
+<!--                                    </button>-->
+<!--                                </footer>-->
+                            </section>
+                            <footer class="info">
+                                <p>双击一行可以编辑</p>
+                            </footer>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block layout:fragment="custom-js">
+    <script th:src="@{/common/jquery/plugin/clock/flipclock.min.js}"></script>
+    <script th:src="@{/js/firstPage/timeTool.js}"></script>
+    <script th:src="@{/common/custom/calculate/calculator.js}"></script>
+    <script>
+        $(document).ready(function () {
+            //翻页钟插件初始化
+            $('.clock').FlipClock({
+                clockFace: 'TwentyFourHourClock'
+            });
+            $("#today").text(getCurrentDateAndWeekDay() + " 农历 " + getCalDate());
+        });
+    </script>
+</th:block>
+</body>
+</html>

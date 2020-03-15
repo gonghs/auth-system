@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head>
+    <th:block th:replace="~{common/base-css.html::htmlhead}"/>
+    <link rel="stylesheet" th:href="@{/common/custom/calculate/calculator.css}"/>
+</head>
+<body>
+<div layout:fragment="content"></div>
+<div th:replace="~{common/base-js.html::javascriptHtml}"></div>
+<!--自定义引入的js-->
+<th:block layout:fragment="custom-js">
+
+</th:block>
+<script>
+    $(document).ready(function () {
+        getThemeToggle();
+    });
+</script>
+</body>
+</html>

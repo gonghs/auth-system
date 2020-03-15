@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<javascriptHtml th:remove="tag" th:fragment="javascriptHtml">
+    <!--    zepto方案  -->
+    <!--    <script type="text/javascript" th:src="@{common/amaze-ui/js/zepto.min.js}"></script>-->
+    <!--    <script type="text/javascript" th:src="@{common/amaze-ui/js/plugin/size-changed.js}"></script>-->
+    <!--    <script type="text/javascript" th:src="@{common/amaze-ui/js/zeptoUtils.js}"></script>-->
+    <!--    jquery方案  -->
+    <script type="text/javascript" th:src="@{/common/jquery/jquery-3.4.1.js}"></script>
+    <script type="text/javascript" th:src="@{/common/jquery/plugin/size-changed.js}"></script>
+    <script type="text/javascript" th:src="@{/common/jquery/jqueryUtils.js}"></script>
+    <script type="text/javascript" th:src="@{/common/axios/axios.min.js}"></script>
+    <script type="text/javascript" th:src="@{/common/amaze-ui/js/amazeui.js}"></script>
+    <script type="text/javascript" th:src="@{/common/amaze-ui/js/app.js}"></script>
+    <script type="text/javascript" th:src="@{/common/globalConfig.js}"></script>
+    <script type="text/javascript" th:src="@{/common/comUtils.js}"></script>
+    <script type="text/javascript" th:src="@{/common/optional.js}"></script>
+    <script type="text/javascript" th:src="@{/common/jquery/plugin/message.js}"></script>
+    <script type="text/javascript" th:src="@{/common/jquery/plugin/emmet/jquery.emmet.min.js}"></script>
+    <script type="text/javascript"
+            th:src="@{/common/amaze-ui/plugin/data-tables/js/amazeui.datatables.min.js}"></script>
+    <script type="text/javascript"
+            th:src="@{/common/amaze-ui/plugin/datetime-picker/js/amazeui.datetimepicker.min.js}"></script>
+    <!--    <script type="text/javascript" th:src="@{/common/tableServer.js}"></script>-->
+    <script type="text/javascript" th:src="@{/js/theme.js}"></script>
+
+    <!-- 根路径 -->
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        ctxPath = /*[[@{/}]]*/ '';
+        ctxPath = ctxPath.endWith('/') ? ctxPath : (ctxPath + '/');
+        baseUrl = (ctxPath.endWith('/') ? ctxPath.substring(0, ctxPath.length - 1) : ctxPath) +
+            /*[[${#httpServletRequest.getAttribute("controller-url")}]]*/ '';
+        // 此路径为 项目根路径如/ 拼接控制器路径 如/user/
+        baseUrl = baseUrl.endWith('/') ? baseUrl : (baseUrl + '/');
+        /*]]>*/
+        console.info(baseUrl);
+    </script>
+    <!-- 此封装依赖于根路径变量 因此要后放 -->
+    <script type="text/javascript" th:src="@{/common/axios/api.js}"></script>
+</javascriptHtml>

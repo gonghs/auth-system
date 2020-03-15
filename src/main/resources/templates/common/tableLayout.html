@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head>
+    <th:block th:replace="~{common/base-css.html::htmlhead}"/>
+    <style>
+        #searchDiv .am-form-group {
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+<!-- 内容区域 -->
+<div class="tpl-content-wrapper" id="user">
+    <div class="row-content am-cf">
+        <div class="row">
+            <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                <div class="widget am-cf">
+                    <div class="widget-head am-cf">
+                        <div class="widget-title  am-cf">
+                            <th:block layout:fragment="title">
+
+                            </th:block>
+                        </div>
+                    </div>
+                    <div class="widget-body  am-fr">
+                        <div id="searchDiv"></div>
+                        <div class="am-u-sm-12" id="tableDiv">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="operate">
+
+</div>
+<div th:replace="~{common/base-js.html::javascriptHtml}"></div>
+<script type="text/javascript" th:src="@{/common/tableServer.js}"></script>
+<script type="text/javascript" th:src="@{/common/operateServer.js}"></script>
+<!--自定义引入的js-->
+<th:block layout:fragment="custom-js">
+
+</th:block>
+<script>
+    $(document).ready(function () {
+        getThemeToggle();
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+/**
+ * 侧边栏相关的黑色主题样式
+ */
+.theme-black .admin-sidebar {
+    background: #3a4144;
+    color: #ffffff;
+}
+
+.theme-black .am-list {
+    background: #3a4144;
+    border: 1px solid #33393c;
+}
+
+.theme-black .admin-sidebar-list li {
+    background: #4b5357;
+    border: 1px solid #33393c;
+}
+
+.theme-black .admin-sidebar-list li a {
+    color: #ffffff;
+}
+
+.theme-black .am-padding-left {
+    background: #3a4144;
+    color: #ffffff;
+}
+
+.theme-black .admin-sidebar-panel {
+    border: 1px solid #33393c;
+}
+
+.theme-black .am-panel-bd {
+    background: #4b5357;
+    color: #ffffff;
+}

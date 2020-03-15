@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "auth.filter-chain",
+      "type": "java.util.List",
+      "description": "Description for auth.filter-chain."
+    }
+  ] }
