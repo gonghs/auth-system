@@ -11,7 +11,7 @@ import javax.servlet.ServletResponse;
 /**
  * 自定义用户过滤器 用户判断过滤未登陆的ajax请求 让其不返回页面
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2019-10-04 14:34
  */

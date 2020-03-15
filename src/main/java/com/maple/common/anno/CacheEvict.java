@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * 删除缓存注解
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2019-07-22 10:07
  */

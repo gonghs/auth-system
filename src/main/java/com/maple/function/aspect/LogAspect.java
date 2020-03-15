@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 /**
  * 日志切面
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2020-02-24 17:00
  */

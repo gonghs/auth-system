@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * 请求工具类
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2019-10-04 14:33
  */

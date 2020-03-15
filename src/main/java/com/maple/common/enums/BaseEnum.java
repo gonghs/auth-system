@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.enums.IEnum;
 /**
  * 基础枚举类
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2019-09-15 16:26
  */

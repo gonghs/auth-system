@@ -5,7 +5,7 @@ import com.maple.common.enums.BaseStrategyEnum;
 /**
  * 策略接触服务类 此处的泛型只用于为service归类
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2020-01-17 14:36
  */

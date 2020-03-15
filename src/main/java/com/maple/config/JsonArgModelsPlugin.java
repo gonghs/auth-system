@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * swagger出入参插件  解决swagger生成文档时参数传输问题(不修正则使用表单提交 应为json提交)
  * 参考源码 spring fox-spring-web OperationModelsProvider
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2019-09-23 09:56
  */

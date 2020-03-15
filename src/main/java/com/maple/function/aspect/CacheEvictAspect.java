@@ -19,7 +19,7 @@ import java.util.List;
  * 由于spring-cache不支持自定义ttl 因此采用自定义方式实现
  * 允许使用SpEl表达式设置key:(支持传入String,String[]或List<String>两种形式的key)
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2019-07-22 10:08
  */

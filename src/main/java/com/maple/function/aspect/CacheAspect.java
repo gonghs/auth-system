@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  * 例如取方法参数名为userContext的id字段为 '1' + #userContext.id 或 #{userContext.id}
  * 同时也支持使用下标方式获取,这种方式必须使用{}包裹表达式 例如取第一个参数的id字段为 #{[0].id}
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2019-07-22 10:08
  */

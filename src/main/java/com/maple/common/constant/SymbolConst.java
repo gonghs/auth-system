@@ -3,7 +3,7 @@ package com.maple.common.constant;
 /**
  * 符号常量
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2020-01-08 15:20
  */

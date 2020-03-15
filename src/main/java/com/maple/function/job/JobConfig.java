@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * 定时任务统一配置
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2020-02-05 10:54
  */

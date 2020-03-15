@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * 基础策略类
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2020-01-17 14:29
  */

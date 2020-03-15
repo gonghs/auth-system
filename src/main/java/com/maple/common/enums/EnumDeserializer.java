@@ -12,7 +12,7 @@ import java.util.Objects;
 /**
  * 枚举反序列化器 此类对@ResquestBody注解的类生效
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2020-02-28 14:49
  */

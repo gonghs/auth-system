@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 /**
  * 测试策略工厂
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2020-02-26 10:30
  */

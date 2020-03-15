@@ -3,7 +3,7 @@ package com.maple.common.constant;
 /**
  * 权限相关的常量
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2019-09-09 20:07
  */

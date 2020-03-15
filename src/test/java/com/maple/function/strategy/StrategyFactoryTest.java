@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * 策略工厂测试
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2020-02-26 10:45
  */

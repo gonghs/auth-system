@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * 数据库配置读取
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2019-09-09 00:23
  */

@@ -6,7 +6,7 @@ import lombok.Getter;
 /**
  * 数据状态枚举
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2019-09-15 16:19
  */

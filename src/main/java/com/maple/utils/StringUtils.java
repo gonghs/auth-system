@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 /**
  * 字符串工具类
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2019-09-20 22:42
  */

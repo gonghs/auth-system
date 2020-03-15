@@ -5,7 +5,7 @@ import javax.security.auth.login.LoginException;
 /**
  * 权限异常的异常
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2019-09-10 10:41
  */

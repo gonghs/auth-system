@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * 权限相关配置
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2020-03-11 14:00
  */

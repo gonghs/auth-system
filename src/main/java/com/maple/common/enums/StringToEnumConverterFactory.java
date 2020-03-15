@@ -11,7 +11,7 @@ import java.util.Objects;
  * ConverterFactory 对表单提交形式的数据生效 序列化器
  * 根据字符串形式的码值或描述转化为枚举
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2020-02-28 16:28
  */

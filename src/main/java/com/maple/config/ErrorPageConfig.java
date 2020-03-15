@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 /**
  * 自定义错误页面
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2019-09-18 23:04
  */

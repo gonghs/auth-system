@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 /**
  * 菜单组装工具
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2019-09-16 22:53
  */

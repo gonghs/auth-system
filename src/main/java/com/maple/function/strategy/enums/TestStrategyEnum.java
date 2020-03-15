@@ -9,7 +9,7 @@ import com.maple.utils.SpringUtils;
 /**
  * 测试策略枚举
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2020-02-26 10:32
  */

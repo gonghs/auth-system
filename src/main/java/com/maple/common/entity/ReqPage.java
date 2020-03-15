@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * 分页参数的请求对象 继承mybatis plus 取消swagger文档泛型参数的写入
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2019-10-04 11:18
  */

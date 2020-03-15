@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * 基础策略枚举
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2019-09-15 16:26
  */

@@ -19,7 +19,7 @@ import java.util.Optional;
 /**
  * 此方法解析器用于解决 @RequestBody不支持多对象的问题(本质上还是使用mybatis-plus分页时不希望DTO对象强制继承page)
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2019-07-16 15:20
  */
