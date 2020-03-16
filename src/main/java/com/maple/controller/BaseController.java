@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maple.common.anno.JsonArg;
+import com.maple.common.anno.Log;
 import com.maple.common.builder.Results;
 import com.maple.common.entity.ReqPage;
 import com.maple.common.entity.Result;
@@ -56,6 +57,7 @@ public class BaseController<Service extends IService<T>, T> {
      * @param model 实体查询条件
      * @return 返回分页数据
      */
+    @Log
     @PostMapping(value = "/dataTablePage")
     @ResponseBody
     @ApiOperation(value = "dataTable分页查询", notes = "分页查询")
