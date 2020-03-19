@@ -34,7 +34,8 @@
 ```
 
 ## 数据库介绍
-初始化sql详见 resource文件夹下 db/init.sql
+初始化sql详见init.sql项目引入了liquibase配置数据库启动项目将会自动执行
+如果需要关闭自动执行请修改配置spring.liquibase.enabled属性为false
 
 ## 系统工具介绍
 ### 后台工具

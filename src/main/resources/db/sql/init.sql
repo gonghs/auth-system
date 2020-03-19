@@ -12,7 +12,7 @@ create table menu
     data_status int(1)   default 1                 null comment '状态（0:删除 1：有效）',
     icon        varchar(50)                        null comment '图标样式名'
 )
-    charset = utf8;
+    comment '菜单表';
 
 INSERT INTO menu (id, menu_name, pid, `desc`, url, is_leaf, create_time, modify_time, data_status, icon) VALUES (1, '系统管理', 0, '系统管理', '', 0, '2018-11-30 10:27:34', '1970-01-01 00:00:00', 1, 'am-icon-file');
 INSERT INTO menu (id, menu_name, pid, `desc`, url, is_leaf, create_time, modify_time, data_status, icon) VALUES (2, '账号管理', 1, '账号管理', '/user/manage', 1, '2018-11-30 11:56:34', '1970-01-01 00:00:00', 1, 'am-icon-check');

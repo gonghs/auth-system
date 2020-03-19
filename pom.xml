@@ -27,6 +27,7 @@
         <dozer.version>6.5.0</dozer.version>
         <shiro.version>1.4.1</shiro.version>
         <inject.version>1</inject.version>
+        <xxl-job.version>2.1.0</xxl-job.version>
         <thymeleaf-shiro.version>2.0.0</thymeleaf-shiro.version>
         <swagger-bootstrap-ui.version>1.9.4</swagger-bootstrap-ui.version>
     </properties>
@@ -50,12 +51,12 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-devtools</artifactId>-->
-<!--            <scope>runtime</scope>-->
-<!--            <optional>true</optional>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-devtools</artifactId>-->
+        <!--            <scope>runtime</scope>-->
+        <!--            <optional>true</optional>-->
+        <!--        </dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -211,7 +212,11 @@
             <artifactId>thymeleaf-extras-shiro</artifactId>
             <version>${thymeleaf-shiro.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.xuxueli</groupId>
+            <artifactId>xxl-job-core</artifactId>
+            <version>${xxl-job.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
