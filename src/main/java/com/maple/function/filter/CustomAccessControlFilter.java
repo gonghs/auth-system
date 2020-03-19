@@ -156,7 +156,7 @@ public class CustomAccessControlFilter extends AccessControlFilter {
         // 如果是普通请求，直接跳转到登录页
         if (RequestUtils.isAjax(request)) {
             log.info("当前用户已经在其他地方登录，并且是Ajax请求！");
-            throw new AuthException("当前用户已经在其他地方登录");
+            WebUtils.toHttp(response).sendError(401);
         } else {
             // 重定向
             WebUtils.issueRedirect(request, response, kickOutUrl);

@@ -26,8 +26,8 @@ public class CodeGeneratorUtils {
      * 生成代码
      *
      * @param dbProperties 数据库配置
-     * @param tableName       生成的表名
-     * @param modelName       模块名 dto.x service.x 等
+     * @param tableName    生成的表名
+     * @param modelName    模块名 dto.x service.x 等
      */
     public void generator(DbProperties dbProperties, String modelName, String... tableName) {
         modelName = StringUtils.isBlank(modelName) ? "" : modelName;

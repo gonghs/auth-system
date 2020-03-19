@@ -1,12 +1,21 @@
 // 全局的js配置
 
 // dataTable 异常信息修正
-// $.fn.dataTable.ext.errMode = function( settings, tn, msg){
-//     console.log(msg);
-//     if (settings.jqXHR.status === 401) {
-//         alert("未登录");
-//     }
-// };
+$.ajaxSetup({
+    global: true,
+    type: "POST",
+    error: function (xhr, status, error) {
+        if (xhr.status === 401) {
+            Message.error("您的账号已经异地登录,请返回登录页重试");
+        }
+    }
+});
+$.fn.dataTable.ext.errMode = function (settings, tn, msg) {
+    console.log(msg);
+    if (settings.jqXHR.status === 401) {
+        Message.error("您的账号已经异地登录,请返回登录页重试");
+    }
+};
 
 
 //修复ie array对象缺少from方法的问题

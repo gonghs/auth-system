@@ -61,7 +61,7 @@ public class ShiroConfig {
         //添加kick out认证
         HashMap<String, Filter> hashMap = new HashMap<>(1);
         hashMap.put("kickout", myAccessControlFilter());
-        hashMap.put("shiroUserFilter", new CustomUserFilter());
+        hashMap.put("authc", new CustomUserFilter());
         bean.setFilters(hashMap);
 
         // 指定要求登录时的链接

@@ -40,7 +40,7 @@ window.JqueryUtils = {
         }
         return aTag;
     },
-    getFormData(formTag) {
+    getFormData: function(formTag) {
         let returnObj = {};
         let valArr = formTag.serializeArray();
         $.each(valArr, function() {

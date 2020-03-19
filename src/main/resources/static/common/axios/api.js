@@ -10,10 +10,12 @@ let Api = axios.create({
 
 Api.interceptors.request.use(function (cfg) {
     if (cfg.method === 'post') {
-        cfg.headers['Content-Type'] = 'application/json'
+        cfg.headers['Content-Type'] = 'application/json';
+        cfg.headers['X-Requested-With'] = 'XMLHttpRequest';
     } else {
         cfg.params = Object.assign({}, cfg.params);
-        cfg.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
+        cfg.headers['X-Requested-With'] = 'XMLHttpRequest';
+        cfg.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
     }
     return cfg
 }, function (error) {
@@ -37,6 +39,15 @@ Api.interceptors.response.use(function (resp) {
         return Promise.reject(resp.data);
     }
 }, function (error) {
-    Message.error('啊偶..请求失败了.. 错误信息: ' + error);
-    return Promise.reject(error)
+    if (!error || !error.response) {
+        Message.error('啊偶..请求失败了.. 错误信息: ' + error);
+        return Promise.reject(error);
+    }
+    switch (error.response.status) {
+        case 401: Message.error('您的账号已经异地登录,请返回登录页重试');break;
+        case 403: Message.error('无权限访问');break;
+        default:  Message.error('啊偶..请求失败了.. 错误信息: ' + error);
+    }
+    return Promise.reject(error);
+
 });

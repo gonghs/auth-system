@@ -6,6 +6,7 @@ import com.maple.common.exception.AuthException;
 import com.maple.common.exception.ErrorCode;
 import com.maple.common.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -27,16 +28,17 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    @Autowired
+    private HttpServletRequest request;
 
     /**
      * 服务异常拦截
      *
-     * @param request 请求参数
-     * @param ex      异常
+     * @param ex 异常
      * @return 异常结果对象
      */
     @ExceptionHandler(value = {ServiceException.class})
-    public Result serviceException(HttpServletRequest request, ServiceException ex) {
+    public Result serviceException(ServiceException ex) {
         logThrowable(false, request, ex);
         return Results.failure(ex);
     }
@@ -44,12 +46,11 @@ public class GlobalExceptionHandler {
     /**
      * 权限异常拦截
      *
-     * @param request 请求参数
-     * @param ex      异常
+     * @param ex 异常
      * @return 异常结果对象
      */
     @ExceptionHandler(value = {AuthException.class})
-    public Result authException(HttpServletRequest request, AuthException ex) {
+    public Result authException(AuthException ex) {
         logThrowable(false, request, ex);
         return Results.failure(ErrorCode.AUTH_ERROR.code(), ex.getMessage()).setDetail(ex.getMessage());
     }
@@ -57,12 +58,11 @@ public class GlobalExceptionHandler {
     /**
      * post RequestParam 参数校验异常拦截
      *
-     * @param request 请求参数
-     * @param ex      异常
+     * @param ex 异常
      * @return 异常结果对象
      */
     @ExceptionHandler(value = {ConstraintViolationException.class})
-    public Result constraintViolationException(HttpServletRequest request, ConstraintViolationException ex) {
+    public Result constraintViolationException(ConstraintViolationException ex) {
         // 获取调试信息(具体校验失败字段)
         String detail = ex.getConstraintViolations().stream().map(item ->
                 String.format("fieldName: %s,message: %s", item.getPropertyPath(), item.getMessage()))
@@ -74,12 +74,11 @@ public class GlobalExceptionHandler {
     /**
      * post requestBody 请求参数校验异常拦截
      *
-     * @param request 请求参数
-     * @param ex      异常
+     * @param ex 异常
      * @return 异常结果对象
      */
     @ExceptionHandler(value = {MethodArgumentNotValidException.class})
-    public Result methodArgumentNotValidException(HttpServletRequest request, MethodArgumentNotValidException ex) {
+    public Result methodArgumentNotValidException(MethodArgumentNotValidException ex) {
         // 获取调试信息(具体校验失败字段)
         String detail = ex.getBindingResult().getFieldErrors().stream().map(item ->
                 String.format("fieldName: %s,message: %s", item.getField(), item.getDefaultMessage()))
@@ -91,12 +90,11 @@ public class GlobalExceptionHandler {
     /**
      * get请求参数校验异常拦截
      *
-     * @param request 请求参数
-     * @param ex      异常
+     * @param ex 异常
      * @return 异常结果对象
      */
     @ExceptionHandler(value = {BindException.class})
-    public Result bindException(HttpServletRequest request, BindException ex) {
+    public Result bindException(BindException ex) {
         // 获取调试信息(具体校验失败字段)
         String detail = ex.getFieldErrors().stream().map(item ->
                 String.format("fieldName: %s,message: %s", item.getField(), item.getDefaultMessage()))
@@ -106,8 +104,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = Throwable.class)
-    public Result defaultErrorHandler(HttpServletRequest request,
-                                      Throwable throwable) {
+    public Result defaultErrorHandler(Throwable throwable) {
         logThrowable(true, request, throwable);
         return Results.failure(ErrorCode.UNKNOWN_ERROR.code(), ErrorCode.UNKNOWN_ERROR.message()).setDetail(throwable.getMessage());
     }

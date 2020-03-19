@@ -1,6 +1,5 @@
 server:
-  port: 8080
-
+  port: 9999
 spring:
   application:
     name: manage-system
@@ -23,6 +22,8 @@ spring:
       cache: false
   liquibase:
     enabled: true
+  thymeleaf:
+    cache: false
 mybatis-plus:
   global-config:
     db-config:
