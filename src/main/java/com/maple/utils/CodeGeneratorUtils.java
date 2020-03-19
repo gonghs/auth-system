@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.generator.config.rules.IColumnType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.maple.properties.DbProperties;
+import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -19,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
  * @since 2019-09-09 00:19
  */
 @Slf4j
+@UtilityClass
 public class CodeGeneratorUtils {
     /**
      * 生成代码
@@ -27,7 +29,7 @@ public class CodeGeneratorUtils {
      * @param tableName       生成的表名
      * @param modelName       模块名 dto.x service.x 等
      */
-    public static void generator(DbProperties dbProperties, String modelName, String... tableName) {
+    public void generator(DbProperties dbProperties, String modelName, String... tableName) {
         modelName = StringUtils.isBlank(modelName) ? "" : modelName;
         AutoGenerator generator = new AutoGenerator();
         // 全局配置
@@ -100,7 +102,7 @@ public class CodeGeneratorUtils {
      * @param modelName 模块名
      * @return 拼接后的名称
      */
-    private static String joinModelName(String name, String modelName) {
+    private String joinModelName(String name, String modelName) {
         return StringUtils.isBlank(modelName) ? name : name + "." + modelName;
     }
 }

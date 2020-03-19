@@ -1,5 +1,7 @@
 package com.maple.utils;
 
+import lombok.experimental.UtilityClass;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,10 +12,11 @@ import java.util.regex.Pattern;
  * @version 1.0
  * @since 2019-09-20 22:42
  */
+@UtilityClass
 public class StringUtils extends org.apache.commons.lang3.StringUtils {
-    private static Pattern pattern2 = Pattern.compile("[A-Z]");
+    private Pattern pattern2 = Pattern.compile("[A-Z]");
 
-    private static Pattern pattern = Pattern.compile("_(\\w)");
+    private Pattern pattern = Pattern.compile("_(\\w)");
 
     /**
      * 驼峰转下划线
@@ -21,7 +24,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      * @param str 需要转化的字符串
      * @return 转化后的字符串
      */
-    public static String camel2_(String str) {
+    public String camel2_(String str) {
         Matcher m = pattern2.matcher(str);
         StringBuffer sb = new StringBuffer(str);
         if (m.find()) {
@@ -40,7 +43,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      * @param str 需要转化的字符串
      * @return 转化后的字符串
      */
-    public static String camel(String str) {
+    public String camel(String str) {
         // 利用正则删除下划线，把下划线后一位改成大写
         Matcher matcher = pattern.matcher(str);
         StringBuffer sb = new StringBuffer(str);

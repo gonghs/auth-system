@@ -16,16 +16,7 @@ function Optional(data, search) {
             if (!this.data) return undefined;
             search = search || this.search;
             if (!search) return this.data;
-            const arr = search.split(".");
-            let rtObj = this.data;
-
-            for (let i = 0; i < arr.length; i++) {
-                rtObj = rtObj[arr[i]];
-                if (rtObj === undefined) {
-                    return undefined;
-                }
-            }
-            return rtObj;
+            return StrTool.objAnalysis(this.data, search);
         },
         // 获取 获取不到则返回默认值
         orElse: function (defaultVal, search) {

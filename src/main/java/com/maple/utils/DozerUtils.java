@@ -3,6 +3,7 @@ package com.maple.utils;
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import com.github.dozermapper.core.Mapper;
 import com.github.dozermapper.core.loader.api.BeanMappingBuilder;
+import lombok.experimental.UtilityClass;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import static com.github.dozermapper.core.loader.api.TypeMappingOptions.*;
  * @version 1.0
  * @since 2019-09-07 10:24
  */
+@UtilityClass
 public class DozerUtils {
     /**
      * 普通转换器
@@ -39,7 +41,7 @@ public class DozerUtils {
      * @param <S> 源类型
      * @return 转换后的实体
      */
-    public static <T, S> T convert(S s, Class<T> clz) {
+    public <T, S> T convert(S s, Class<T> clz) {
         if (s == null) {
             return null;
         }
@@ -55,7 +57,7 @@ public class DozerUtils {
      * @param <S> 源类型
      * @return 转换后的实体
      */
-    public static <T, S> T convertIgnoreError(S s, Class<T> clz) {
+    public <T, S> T convertIgnoreError(S s, Class<T> clz) {
         DozerBeanMapperBuilder dozerBeanMapperBuilder = DozerBeanMapperBuilder.create();
         Mapper mapper = dozerBeanMapperBuilder.withMappingBuilders(new BeanMappingBuilder() {
             @Override
@@ -78,7 +80,7 @@ public class DozerUtils {
      * @param <S> 源类型
      * @return 拷贝list
      */
-    public static <T, S> List<T> convert(List<S> s, Class<T> clz) {
+    public <T, S> List<T> convert(List<S> s, Class<T> clz) {
         if (s == null) {
             return null;
         }
@@ -98,7 +100,7 @@ public class DozerUtils {
      * @param <S> 源类型
      * @return 拷贝set
      */
-    public static <T, S> Set<T> convert(Set<S> s, Class<T> clz) {
+    public <T, S> Set<T> convert(Set<S> s, Class<T> clz) {
         if (s == null) {
             return null;
         }
@@ -118,7 +120,7 @@ public class DozerUtils {
      * @param <S> 源类型
      * @return 拷贝后的数组
      */
-    public static <T, S> T[] convert(S[] s, Class<T> clz) {
+    public <T, S> T[] convert(S[] s, Class<T> clz) {
         if (s == null) {
             return null;
         }
@@ -136,7 +138,7 @@ public class DozerUtils {
      * @param source 数据源
      * @param target 指向源
      */
-    public static void copyIgnoreNullAndBlank(Object source, Object target) {
+    public void copyIgnoreNullAndBlank(Object source, Object target) {
         DozerBeanMapperBuilder dozerBeanMapperBuilder = DozerBeanMapperBuilder.create();
         Mapper mapper = dozerBeanMapperBuilder.withMappingBuilders(new BeanMappingBuilder() {
             @Override
@@ -153,7 +155,7 @@ public class DozerUtils {
      * @param source 数据源
      * @param target 指向源
      */
-    public static void copyIgnoreNull(Object source, Object target) {
+    public void copyIgnoreNull(Object source, Object target) {
         DozerBeanMapperBuilder dozerBeanMapperBuilder = DozerBeanMapperBuilder.create();
         Mapper mapper = dozerBeanMapperBuilder.withMappingBuilders(new BeanMappingBuilder() {
             @Override

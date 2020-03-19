@@ -53,9 +53,3 @@ let StrTool = {
         return rtObj;
     }
 };
-
-String.prototype.endWith = function (s) {
-    if (s == null || s === "" || this.length === 0 || s.length > this.length)
-        return false;
-    return this.substring(this.length - s.length) === s;
-};

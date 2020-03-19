@@ -1,5 +1,6 @@
 package com.maple.utils;
 
+import lombok.experimental.UtilityClass;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
@@ -15,6 +16,7 @@ import java.lang.reflect.Method;
  * @version 1.0
  * @since 2019-07-19 09:55
  */
+@UtilityClass
 public class SpringElUtils {
     /**
      * 转换参数为字符串
@@ -23,7 +25,7 @@ public class SpringElUtils {
      * @param contextObj 上下文对象
      * @return 解析的字符串值
      */
-    public static Object parse(String spEL, Method method, Object[] contextObj) {
+    public Object parse(String spEL, Method method, Object[] contextObj) {
         LocalVariableTableParameterNameDiscoverer discoverer = new LocalVariableTableParameterNameDiscoverer();
         ExpressionParser parser = new SpelExpressionParser();
         Expression exp = parser.parseExpression(spEL);
@@ -43,7 +45,7 @@ public class SpringElUtils {
      * @param spEL el表达式
      * @return 实际使用的el表达式
      */
-    public static Object parseKey(String spEL, Method method, Object[] contextObj) {
+    public Object parseKey(String spEL, Method method, Object[] contextObj) {
         // 如果不是SpEL表达式，则直接返回
         if (!spEL.contains("#")) {
             return spEL;

@@ -1,5 +1,6 @@
 package com.maple.utils;
 
+import lombok.experimental.UtilityClass;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.util.ByteSource;
 
@@ -9,6 +10,7 @@ import org.apache.shiro.util.ByteSource;
  * @author maple
  * @date 2019-9-10
  */
+@UtilityClass
 public class DigestUtils {
 
     /**
@@ -17,7 +19,7 @@ public class DigestUtils {
      * @param userName 用户名
      * @param password 密码
      */
-    public static String md5(String userName, String password) {
+    public String md5(String userName, String password) {
         Md5Hash hash = new Md5Hash(password, ByteSource.Util.bytes(userName), 2);
         return hash.toString();
     }
