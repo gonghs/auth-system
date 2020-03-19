@@ -21,6 +21,8 @@ spring:
           enabled: true
           paths: js/**,css/**,common/**
       cache: false
+  liquibase:
+    enabled: true
 mybatis-plus:
   global-config:
     db-config:

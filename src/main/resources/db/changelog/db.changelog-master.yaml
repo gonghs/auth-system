@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: maple
+      changes:
+      - sqlFile:
+          dbms: mysql
+          encoding: UTF-8
+          path: ../sql/init.sql
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true
