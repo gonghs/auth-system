@@ -26,7 +26,7 @@ Api.interceptors.request.use(function (cfg) {
 // 响应贴合后台封装进行处理
 Api.interceptors.response.use(function (resp) {
     if (resp.data.success) {
-        // 去除result对象包装 将消息放如响应对象
+        // 去除result对象包装 将消息放入响应对象
         let respData = resp.data.data;
         respData.message = resp.data.message;
         return respData;
@@ -44,9 +44,14 @@ Api.interceptors.response.use(function (resp) {
         return Promise.reject(error);
     }
     switch (error.response.status) {
-        case 401: Message.error('您的账号已经异地登录,请返回登录页重试');break;
-        case 403: Message.error('无权限访问');break;
-        default:  Message.error('啊偶..请求失败了.. 错误信息: ' + error);
+        case 401:
+            Message.error('您的账号已经异地登录,请返回登录页重试');
+            break;
+        case 403:
+            Message.error('无权限访问');
+            break;
+        default:
+            Message.error('啊偶..请求失败了.. 错误信息: ' + error);
     }
     return Promise.reject(error);
 

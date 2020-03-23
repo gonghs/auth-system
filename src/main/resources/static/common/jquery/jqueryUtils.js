@@ -40,10 +40,10 @@ window.JqueryUtils = {
         }
         return aTag;
     },
-    getFormData: function(formTag) {
+    getFormData: function (formTag) {
         let returnObj = {};
         let valArr = formTag.serializeArray();
-        $.each(valArr, function() {
+        $.each(valArr, function () {
             returnObj[this.name] = this.value;
         });
         return returnObj;
