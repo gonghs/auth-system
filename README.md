@@ -13,12 +13,13 @@
 │   ├── entity 全局的实体类
 │   ├── enums 全局的基础枚举
 │   └── exeception 和异常相关的一些基础类
-├── config(包含spring的一些bean配置)
 ├── controller(控制器)
 ├── dao(数据访问层)
 ├── dto(数据对象)
 ├── function(包含一些系统职能相关的内容 包括定时任务,策略服务,过滤器,拦截器等)
 │   ├── aspect 放置所有的aop切面
+│   ├── basic 放置一些提供实现的基本类
+│   ├── config 包含spring的一些bean配置
 │   ├── filter(过滤器)
 │   ├── handler(处理器)
 │   ├── interceptor(拦截器)
@@ -45,17 +46,15 @@
 cache.prefix=...
 // 普通工具类(注入使用)
 @Autowired
-CacheUtils cacheUtils;
+RedisUtils redisUtils;
+//设置缓存且不超时
+redisUtils.set(key,object);
 //设置缓存且自定义超时时间(/分钟)
-cacheUtils.set(key,object,ttlMinutes);
+redisUtils.set(key,object,ttlMinutes);
 //设置缓存且自定义超时时间和时间单位
-cacheUtils.set(key,object,ttl,timeUnit);
-//获取普通对象
-cacheUtils.get(key,class);
-//获取对象列表
-cacheUtils.getList(key,class);
-//获取复杂对象(需要传入所有的泛型类对象)  例如Result<List<UserDTO>> 需要传入 Result.class List.class FileInfoBO.class
-cacheUtils.getComplex(key,class...);
+redisUtils.set(key,object,ttl,timeUnit);
+//获取对象 什么类型存入就以什么类型取出来
+redisUtils.get(key);
  
 // 缓存切面(任意方法上使用,key支持SpEL表达式) 
 // 此例将为该方法返回值设置10分钟的key为 fileCache-[key]的缓存,即接下来10分钟从缓存获取方法返回值。
@@ -136,6 +135,8 @@ public class StrategyFactoryTest extends BaseTest {
 ### 前端工具
 
 #### tableServer.js
+基于amaze-ui data-tables的一层封装详见文档:
+[tableServer](http://note.youdao.com/noteshare?id=d1831a1a33f68265315104999e5d8085&sub=9EF2DC58A15C42E78290038D73133345)
 
 #### operateServer.js
 

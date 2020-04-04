@@ -2,6 +2,7 @@ package com.maple.function.interceptor;
 
 import com.alibaba.fastjson.JSON;
 import com.maple.common.anno.JsonArg;
+import com.maple.common.constant.GlobalConst;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -11,7 +12,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -47,7 +47,7 @@ public class JsonArgMethodArgumentResolver implements HandlerMethodArgumentResol
         if (Objects.isNull(jsonBody)) {
             try {
                 // 此值只能读取一次 因此读取完毕 放回去第二次从该处读取
-                jsonBody = IOUtils.toString(servletRequest.getInputStream(), Charset.defaultCharset());
+                jsonBody = IOUtils.toString(servletRequest.getInputStream(), GlobalConst.DEFAULT_CHAERSET);
                 webRequest.setAttribute(JSON_BODY_ATTRIBUTE, jsonBody, NativeWebRequest.SCOPE_REQUEST);
                 return jsonBody;
             } catch (IOException e) {

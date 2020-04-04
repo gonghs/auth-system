@@ -63,14 +63,3 @@ auth:
     - /user/login:anon
     # 其他所有url都必须认证通过才可以访问
     - /**:kickout,authc
-xxl:
-  job:
-    admin:
-      addresses: http://xxljob.heisea.cn/
-    executor:
-      app-name: dupstand-web
-      ip: 192.168.29.181
-      port: 9999
-      log-path: /data/applogs/xxl-job/jobhandler
-      log-retention-days: 3
-    accessToken:

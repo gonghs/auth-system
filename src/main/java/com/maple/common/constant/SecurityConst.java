@@ -11,7 +11,7 @@ public class SecurityConst {
     /**
      * 登陆的url
      */
-    public static final String LOGIN_URL = "/Login";
+    public static final String LOGIN_URL = "/login";
 
     /**
      * 用于标记是否踢出的标识key

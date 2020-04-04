@@ -58,6 +58,7 @@
         init: function (option) {
             option = option || {};
             $.extend(this, option);
+            return this;
         },
         //构建表格对象
         build: function (columnsOption, dataTableOption) {
@@ -78,6 +79,7 @@
             this._sortedAndAutoCreateSearchDiv();
             //创建dataTable对象
             this._createDataTable(table);
+            return this;
         },
         //创建查询条件对象 option为数组 [{type: 'select',key: 'nameCn',label: '产品名称'}]
         //可选属性 options: [code:'',name:''] 对应select下拉选项
@@ -529,9 +531,9 @@
             }
             let buildDiv = $.e('div.am-u-sm-12.am-u-md-6.am-u-lg-2>div.am-form-group>div.am-btn-toolbar>div.am-btn-group.am-btn-group-xs')
                 .find('.am-btn-group');
-            this.actionOption.forEach(function (item) {
+            this.actionOption.some(function (item) {
                 if (!item.action || (ComUtils.isNotFunction(item.action) && ComUtils.isNotString(item.action))) {
-                    return;
+                    return false;
                 }
                 if (ComUtils.isString(item.action)) {
                     buildDiv.append('<a type="button" class="am-btn am-btn-success" href="' + item.action + '>' +
