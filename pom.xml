@@ -26,6 +26,7 @@
         <druid.version>1.1.20</druid.version>
         <dozer.version>6.5.0</dozer.version>
         <shiro.version>1.4.1</shiro.version>
+        <hutool.version>5.0.3</hutool.version>
         <inject.version>1</inject.version>
         <xxl-job.version>2.1.0</xxl-job.version>
         <thymeleaf-shiro.version>2.0.0</thymeleaf-shiro.version>
@@ -114,7 +115,11 @@
             <artifactId>javax.inject</artifactId>
             <version>${inject.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool.version}</version>
+        </dependency>
         <!-- document -->
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
