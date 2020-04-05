@@ -33,6 +33,7 @@ public class RedisUtilsTest extends BaseTest {
     @Test
     public void setAndGet() throws InterruptedException {
         redisUtils.set(testKey, testObj);
+        Assert.assertTrue(redisUtils.hasKey(testKey));
         redisUtils.set(testKey + '1', testObj, 1, TimeUnit.MILLISECONDS);
         Thread.sleep(1);
         List<BaseDTO> resultDTO = redisUtils.get(testKey);
@@ -45,7 +46,7 @@ public class RedisUtilsTest extends BaseTest {
 
     @Test
     public void del() {
-        redisUtils.del(testKey);
+        Assert.assertTrue(redisUtils.del(testKey));
         Assert.assertNull(redisUtils.get(testKey));
     }
 }

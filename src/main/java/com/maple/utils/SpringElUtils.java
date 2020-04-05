@@ -1,6 +1,8 @@
 package com.maple.utils;
 
+import com.maple.common.constant.SymbolConst;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
@@ -8,6 +10,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 /**
  * spEL表达式解析工具
@@ -40,6 +43,32 @@ public class SpringElUtils {
     }
 
     /**
+     * 替换参数值
+     *
+     * @param key  spEL表达式
+     * @param args 参数数组
+     * @return 替换后的结果
+     */
+    public Object[] replaseArg(String key, Method method, Object[] args, Object replaceObj) {
+        LocalVariableTableParameterNameDiscoverer discoverer = new LocalVariableTableParameterNameDiscoverer();
+        String[] params = discoverer.getParameterNames(method);
+        Integer argIndex = null;
+        if (params != null) {
+            for (int len = 0; len < params.length; len++) {
+                if (Objects.equals(params[len], key)) {
+                    argIndex = len;
+                }
+            }
+        }
+        if (argIndex == null) {
+            return args;
+        }
+        Object[] returnArgs = ArrayUtils.clone(args);
+        returnArgs[argIndex] = replaceObj;
+        return returnArgs;
+    }
+
+    /**
      * 校验并返回实际使用的el表达式
      *
      * @param spEL el表达式
@@ -47,7 +76,7 @@ public class SpringElUtils {
      */
     public Object parseKey(String spEL, Method method, Object[] contextObj) {
         // 如果不是SpEL表达式，则直接返回
-        if (!spEL.contains("#")) {
+        if (!spEL.contains(SymbolConst.POUND)) {
             return spEL;
         }
         return parse(spEL, method, contextObj);

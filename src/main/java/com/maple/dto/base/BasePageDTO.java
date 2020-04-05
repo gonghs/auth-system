@@ -23,6 +23,7 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 public class BasePageDTO extends Page {
 
+    private static final long serialVersionUID = -5180447363632554128L;
     @TableId(type = IdType.AUTO)
     @ApiModelProperty(value = "id")
     private Long id;

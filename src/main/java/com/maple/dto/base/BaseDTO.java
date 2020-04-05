@@ -1,12 +1,11 @@
 package com.maple.dto.base;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.*;
 import com.maple.common.enums.DataStatusEnum;
-import com.maple.common.enums.EnumDeserializer;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -17,7 +16,9 @@ import java.util.Date;
  * @since 2019-09-07 11:08
  */
 @Data
-public class BaseDTO {
+public class BaseDTO implements Serializable {
+
+    private static final long serialVersionUID = 3607422483228078665L;
 
     @TableId(type = IdType.AUTO)
     @ApiModelProperty(value = "id", example = "111111")
