@@ -49,7 +49,7 @@ public class SpringElUtils {
      * @param args 参数数组
      * @return 替换后的结果
      */
-    public Object[] replaseArg(String key, Method method, Object[] args, Object replaceObj) {
+    public Object[] replaceArg(String key, Method method, Object[] args, Object replaceObj) {
         LocalVariableTableParameterNameDiscoverer discoverer = new LocalVariableTableParameterNameDiscoverer();
         String[] params = discoverer.getParameterNames(method);
         Integer argIndex = null;

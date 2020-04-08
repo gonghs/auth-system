@@ -50,7 +50,7 @@ public class PrefixAspect {
             return joinPoint.proceed();
         }
         // 替换参数
-        Object[] resultArgs = SpringElUtils.replaseArg(prefix.value(),
+        Object[] resultArgs = SpringElUtils.replaceArg(prefix.value(),
                 ((MethodSignature) joinPoint.getSignature()).getMethod(),
                 joinPoint.getArgs(), o);
         return joinPoint.proceed(resultArgs);
