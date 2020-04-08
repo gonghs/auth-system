@@ -1,10 +1,8 @@
 package com.maple.utils;
 
 import cn.hutool.core.collection.CollUtil;
+import com.maple.common.anno.Prefix;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
@@ -17,18 +15,21 @@ import java.util.concurrent.TimeUnit;
 /**
  * redis 工具类
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2020-04-01 11:34
  */
 @Component
 @Validated
 public class RedisUtils {
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
-    @Value("${cache.prefix:}")
-    private String prefix;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private static final String PREFIX_ENV = "cache.prefix";
+    private static final String PREFIX_KEY = "key";
     private static final TimeUnit DEFAULT_TIME_UNIT = TimeUnit.MINUTES;
+
+    public RedisUtils(RedisTemplate<String, Object> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
 
     /**
      * 设置缓存 无过期时间
@@ -36,8 +37,9 @@ public class RedisUtils {
      * @param key    缓存key
      * @param object 缓存对象
      */
+    @Prefix(value = PREFIX_KEY, prefix = PREFIX_ENV)
     public void set(@NotBlank String key, Object object) {
-        redisTemplate.opsForValue().set(joinKey(key), object);
+        redisTemplate.opsForValue().set(key, object);
     }
 
 
@@ -61,10 +63,9 @@ public class RedisUtils {
      * @param ttl      过期时间
      * @param timeUnit 时间单位
      */
+    @Prefix(value = PREFIX_KEY, prefix = PREFIX_ENV)
     public void set(@NotBlank String key, Object object, long ttl, TimeUnit timeUnit) {
-        checkKeyNotBlank(key);
-
-        redisTemplate.opsForValue().set(joinKey(key), object, ttl, timeUnit);
+        redisTemplate.opsForValue().set(key, object, ttl, timeUnit);
     }
 
 
@@ -75,6 +76,7 @@ public class RedisUtils {
      * @return any 值对象
      */
     @SuppressWarnings("unchecked cast")
+    @Prefix(value = PREFIX_KEY, prefix = PREFIX_ENV)
     public <T> T get(@NotBlank String key) {
         return (T) getAny(key);
     }
@@ -86,8 +88,7 @@ public class RedisUtils {
      * @return any 值对象
      */
     private Object getAny(@NotBlank String key) {
-        checkKeyNotBlank(key);
-        return redisTemplate.opsForValue().get(joinKey(key));
+        return redisTemplate.opsForValue().get(key);
     }
 
     /**
@@ -95,10 +96,10 @@ public class RedisUtils {
      *
      * @param key key
      */
+    @Prefix(value = PREFIX_KEY, prefix = PREFIX_ENV)
     public Boolean del(@NotBlank String key) {
-        checkKeyNotBlank(key);
 
-        return redisTemplate.delete(joinKey(key));
+        return redisTemplate.delete(key);
     }
 
     /**
@@ -107,10 +108,10 @@ public class RedisUtils {
      * @param key key
      * @return 是否存在 可能为空
      */
-    public Boolean hasKey(@NotBlank String key) {
-        checkKeyNotBlank(key);
+    @Prefix(value = PREFIX_KEY, prefix = PREFIX_ENV)
+    public Boolean hasKey(String key) {
 
-        return redisTemplate.hasKey(joinKey(key));
+        return redisTemplate.hasKey(key);
     }
 
     /**
@@ -120,10 +121,9 @@ public class RedisUtils {
      * @param hashKey hash key
      * @param value   map值
      */
+    @Prefix(value = PREFIX_KEY, prefix = PREFIX_ENV)
     public void put(@NotBlank String key, @NotBlank String hashKey, Object value) {
-        checkKeyNotBlank(key);
-
-        redisTemplate.opsForHash().put(joinKey(key), hashKey, value);
+        redisTemplate.opsForHash().put(key, hashKey, value);
     }
 
     /**
@@ -159,10 +159,9 @@ public class RedisUtils {
      * @return T
      */
     @SuppressWarnings("unchecked cast")
+    @Prefix(value = PREFIX_KEY, prefix = PREFIX_ENV)
     public <T> T get(@NotBlank String key, @NotBlank String hashKey) {
-        checkKeyNotBlank(key, hashKey);
-
-        return (T) redisTemplate.opsForHash().get(joinKey(key), hashKey);
+        return (T) redisTemplate.opsForHash().get(key, hashKey);
     }
 
     /**
@@ -171,10 +170,9 @@ public class RedisUtils {
      * @param key key
      * @return size
      */
+    @Prefix(value = PREFIX_KEY, prefix = PREFIX_ENV)
     public Long hashSize(@NotBlank String key) {
-        checkKeyNotBlank(key);
-
-        return redisTemplate.opsForHash().size(joinKey(key));
+        return redisTemplate.opsForHash().size(key);
     }
 
     /**
@@ -183,10 +181,9 @@ public class RedisUtils {
      * @param key key
      * @return size
      */
+    @Prefix(value = PREFIX_KEY, prefix = PREFIX_ENV)
     public Set<Object> hashKeys(@NotBlank String key) {
-        checkKeyNotBlank(key);
-
-        Set<Object> keys = redisTemplate.opsForHash().keys(joinKey(key));
+        Set<Object> keys = redisTemplate.opsForHash().keys(key);
         return CollectionUtils.isEmpty(keys) ? CollUtil.newHashSet() : keys;
     }
 
@@ -196,10 +193,9 @@ public class RedisUtils {
      * @param key key
      * @return size
      */
+    @Prefix(value = PREFIX_KEY, prefix = PREFIX_ENV)
     public List<Object> hashValues(@NotBlank String key) {
-        checkKeyNotBlank(key);
-
-        List<Object> keys = redisTemplate.opsForHash().values(joinKey(key));
+        List<Object> keys = redisTemplate.opsForHash().values(key);
         return CollectionUtils.isEmpty(keys) ? CollUtil.newArrayList() : keys;
     }
 
@@ -210,22 +206,8 @@ public class RedisUtils {
      * @param ttl      过期时间
      * @param timeUnit 时间单位
      */
+    @Prefix(value = PREFIX_KEY, prefix = PREFIX_ENV)
     public Boolean expire(@NotBlank String key, long ttl, TimeUnit timeUnit) {
-        checkKeyNotBlank(key);
-
-        return redisTemplate.expire(joinKey(key), ttl, timeUnit);
-    }
-
-
-    private static void checkKeyNotBlank(String... key) {
-        for (String s : key) {
-            if (StringUtils.isBlank(s)) {
-                throw new IllegalArgumentException("key不能为空");
-            }
-        }
-    }
-
-    private String joinKey(String key) {
-        return StringUtils.isBlank(prefix) ? key : prefix + key;
+        return redisTemplate.expire(key, ttl, timeUnit);
     }
 }

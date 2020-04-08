@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * log注解
+ * 该注解作用与方法用于给方法入参增加前缀
  *
  * @author maple
  * @version 1.0
@@ -14,19 +14,19 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Log {
+public @interface Prefix {
     /**
-     * 是否开启入参打印
+     * 需要加前缀的参数名
      */
-    boolean enableInputParams() default true;
+    String value();
 
     /**
-     * 是否开启出参打印
+     * 前缀key值 会从配置去取
      */
-    boolean enableOutputParams() default true;
+    String prefix() default "";
 
     /**
-     * 是否开启执行时间打印
+     * 是否给空字串加前缀
      */
-    boolean enableExecuteTime() default true;
+    boolean ignoreBlank() default true;
 }
