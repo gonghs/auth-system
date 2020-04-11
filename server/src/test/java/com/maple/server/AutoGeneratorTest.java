@@ -1,7 +1,7 @@
 package com.maple.server;
 
-import com.maple.server.properties.DbProperties;
-import com.maple.server.utils.CodeGeneratorUtils;
+import com.maple.starter.generator.CodeGeneratorUtils;
+import com.maple.starter.generator.properties.CodeGeneratorProperties;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,10 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class AutoGeneratorTest extends BaseTest {
     @Autowired
-    private DbProperties dbProperties;
+    private CodeGeneratorProperties codeGeneratorProperties;
+    @Autowired
+    private CodeGeneratorUtils codeGeneratorUtils;
 
     @Test
     public void generator() {
-        CodeGeneratorUtils.generator(dbProperties, "admin", "menu");
+        codeGeneratorProperties.setGenTables(new String[]{"test"});
+        codeGeneratorProperties.setModelName("test");
+        codeGeneratorUtils.generator();
     }
 }

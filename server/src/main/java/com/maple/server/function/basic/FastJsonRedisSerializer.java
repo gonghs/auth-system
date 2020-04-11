@@ -29,7 +29,7 @@ public class FastJsonRedisSerializer<T> implements RedisSerializer<T> {
 
     @Override
     public byte[] serialize(T t) throws SerializationException {
-        return JSON.toJSONString(t, SerializerFeature.WriteClassName).getBytes(GlobalConst.DEFAULT_CHAERSET);
+        return JSON.toJSONString(t, SerializerFeature.WriteClassName).getBytes(GlobalConst.DEFAULT_CHARSET);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class FastJsonRedisSerializer<T> implements RedisSerializer<T> {
         if (ArrayUtils.isEmpty(bytes)) {
             return null;
         }
-        String str = new String(bytes, GlobalConst.DEFAULT_CHAERSET);
+        String str = new String(bytes, GlobalConst.DEFAULT_CHARSET);
         return JSON.parseObject(str, clazz);
     }
 }

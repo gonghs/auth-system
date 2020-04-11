@@ -47,7 +47,7 @@ public class JsonArgMethodArgumentResolver implements HandlerMethodArgumentResol
         if (Objects.isNull(jsonBody)) {
             try {
                 // 此值只能读取一次 因此读取完毕 放回去第二次从该处读取
-                jsonBody = IOUtils.toString(servletRequest.getInputStream(), GlobalConst.DEFAULT_CHAERSET);
+                jsonBody = IOUtils.toString(servletRequest.getInputStream(), GlobalConst.DEFAULT_CHARSET);
                 webRequest.setAttribute(JSON_BODY_ATTRIBUTE, jsonBody, NativeWebRequest.SCOPE_REQUEST);
                 return jsonBody;
             } catch (IOException e) {

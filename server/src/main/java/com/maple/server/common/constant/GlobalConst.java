@@ -1,7 +1,5 @@
 package com.maple.server.common.constant;
 
-import org.apache.http.Consts;
-
 import java.nio.charset.Charset;
 
 /**
@@ -19,11 +17,11 @@ public class GlobalConst {
     /**
      * 默认编码
      */
-    public static final Charset DEFAULT_CHAERSET = Consts.UTF_8;
+    public static final Charset DEFAULT_CHARSET = Charset.defaultCharset();
     /**
      * 默认编码
      */
-    public static final String DEFAULT_CHAERSET_STR = Consts.UTF_8.toString();
+    public static final String DEFAULT_CHARSET_STR = Charset.defaultCharset().toString();
     /**
      * 成功消息
      */
