@@ -11,6 +11,7 @@
     <groupId>com.maple</groupId>
     <artifactId>auth-system</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
     <name>auth-system</name>
     <description>base auth system for Spring Boot</description>
     <modules>

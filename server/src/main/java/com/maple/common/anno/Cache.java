@@ -1,4 +1,4 @@
-package com.maple.server.common.anno;
+package com.maple.common.anno;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
