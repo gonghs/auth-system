@@ -175,7 +175,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.maple.AuthSystemApplication</mainClass>
+                    <mainClass>com.maple.server.AuthSystemApplication</mainClass>
                 </configuration>
             </plugin>
         </plugins>

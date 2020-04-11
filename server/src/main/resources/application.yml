@@ -32,7 +32,7 @@ mybatis-plus:
       logic-delete-value: 0
       logic-not-delete-value: 1
       select-strategy: not_empty
-  type-enums-package: com.maple.common.enums
+  type-enums-package: com.maple.server.common.enums
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 auth:
