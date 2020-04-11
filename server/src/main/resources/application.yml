@@ -3,6 +3,8 @@ server:
 spring:
   application:
     name: manage-system
+  profiles:
+    active: '@pom.profile.name@'
   datasource:
     druid:
       url: jdbc:mysql://localhost:3306/manager?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8
@@ -65,3 +67,13 @@ auth:
     - /**:kickout,authc
 cache:
   prefix: custom-cache-
+logging:
+  path: logs/
+  level:
+    root: info
+    org: info
+    net: info
+    io: info
+    springfox.documentation: info
+    sun: info
+    com: info
