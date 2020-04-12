@@ -218,7 +218,7 @@ public class ShiroConfig {
         SimpleCookie simpleCookie = new SimpleCookie();
         //如果在Cookie中设置了"HttpOnly"属性，那么通过程序(JS脚本、Applet等)将无法读取到Cookie信息，这样能有效的防止XSS攻击。
         simpleCookie.setHttpOnly(true);
-        simpleCookie.setName("shiroSessionId");
+        simpleCookie.setName("redisShiroSessionId");
         //单位秒
         simpleCookie.setMaxAge(86400);
         return simpleCookie;
