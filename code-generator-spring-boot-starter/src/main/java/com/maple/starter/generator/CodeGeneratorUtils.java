@@ -1,15 +1,14 @@
 package com.maple.starter.generator;
 
-import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.config.*;
 import com.baomidou.mybatisplus.generator.config.converts.MySqlTypeConvert;
 import com.baomidou.mybatisplus.generator.config.rules.IColumnType;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.maple.starter.generator.properties.CodeGeneratorProperties;
+import com.maple.starter.generator.properties.DbProperties;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 
 /**
  * 代码生成器工具
@@ -21,8 +20,9 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 @Slf4j
 @AllArgsConstructor
 public class CodeGeneratorUtils {
-    private final DataSourceProperties dbProperties;
+    private final DbProperties dbProperties;
     private final CodeGeneratorProperties codeGeneratorProperties;
+
 
     /**
      * 生成代码
@@ -31,7 +31,6 @@ public class CodeGeneratorUtils {
         AutoGenerator generator = new AutoGenerator();
         // 全局配置
         GlobalConfig gc = codeGeneratorProperties.getGlobalConfig();
-        //数据库配置
         DataSourceConfig dsc = new DataSourceConfig()
                 .setTypeConvert(new MySqlTypeConvert() {
                     // 自定义数据库表字段类型转换【可选】
@@ -41,11 +40,11 @@ public class CodeGeneratorUtils {
                         // 注意！！processTypeConvert 存在默认类型转换，如果不是你要的效果请自定义返回、非如下直接返回。
                         return super.processTypeConvert(globalConfig, fieldType);
                     }
-                }).setDbType(DbType.MYSQL)
-                .setDriverName(dbProperties.getDriverClassName())
+                }).setDriverName(dbProperties.getDriverClassName())
                 .setUrl(dbProperties.getUrl())
                 .setUsername(dbProperties.getUsername())
                 .setPassword(dbProperties.getPassword());
+
 
         // 策略配置
         StrategyConfig strategy =

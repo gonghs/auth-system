@@ -77,3 +77,8 @@ logging:
     springfox.documentation: info
     sun: info
     com: info
+mp:
+  tool:
+    generator:
+      gen-tables: test
+      model-name: test

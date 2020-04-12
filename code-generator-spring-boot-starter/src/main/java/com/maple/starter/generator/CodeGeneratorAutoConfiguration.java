@@ -1,8 +1,7 @@
 package com.maple.starter.generator;
 
 import com.maple.starter.generator.properties.CodeGeneratorProperties;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import com.maple.starter.generator.properties.DbProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,11 +14,11 @@ import org.springframework.context.annotation.Configuration;
  * @since 2020-04-11 21:30
  */
 @Configuration
-@EnableConfigurationProperties(CodeGeneratorProperties.class)
+@EnableConfigurationProperties({CodeGeneratorProperties.class, DbProperties.class})
 public class CodeGeneratorAutoConfiguration {
     @Bean
-    @ConditionalOnBean(DataSourceProperties.class)
-    public CodeGeneratorUtils codeGeneratorUtils(DataSourceProperties dbProperties,CodeGeneratorProperties codeGeneratorProperties) {
+    public CodeGeneratorUtils codeGeneratorUtils(DbProperties dbProperties,
+                                                 CodeGeneratorProperties codeGeneratorProperties) {
         return new CodeGeneratorUtils(dbProperties, codeGeneratorProperties);
     }
 }

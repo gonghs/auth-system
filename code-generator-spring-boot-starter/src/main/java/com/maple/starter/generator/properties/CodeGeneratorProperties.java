@@ -3,6 +3,8 @@ package com.maple.starter.generator.properties;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -24,9 +26,11 @@ public class CodeGeneratorProperties {
     private PackageConfig packageConfig = new PackageConfig();
 
     @Getter
+    @Setter
+    @Accessors(chain = true)
     public class GlobalConfig extends com.baomidou.mybatisplus.generator.config.GlobalConfig {
         private String author = "maple";
-        private String outputDir = System.getProperty("user.dir") + "/server/src/main/java";
+        private String outputDir = System.getProperty("user.dir") + "/gen/";
         private Boolean swagger2 = true;
         private Boolean fileOverride = false;
         private String entityName = "%sDTO";
@@ -38,6 +42,8 @@ public class CodeGeneratorProperties {
     }
 
     @Getter
+    @Setter
+    @Accessors(chain = true)
     public class StrategyConfig extends com.baomidou.mybatisplus.generator.config.StrategyConfig {
         private Boolean entityLombokModel = true;
         private String[] superEntityColumns = {"id", "desc", "modify_time", "create_time", "data_status"};
@@ -56,6 +62,8 @@ public class CodeGeneratorProperties {
 
 
     @Getter
+    @Setter
+    @Accessors(chain = true)
     public class PackageConfig extends com.baomidou.mybatisplus.generator.config.PackageConfig {
         private String entity = "dto";
         private String mapper = "dao";
