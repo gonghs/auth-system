@@ -3,8 +3,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
 !**/src/test/**
-rebel.xml
-rebel-remote.xml
+**rebel**
 
 ### STS ###
 .apt_generated
