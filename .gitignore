@@ -4,6 +4,7 @@ target/
 !**/src/main/**
 !**/src/test/**
 rebel.xml
+rebel-remote.xml
 
 ### STS ###
 .apt_generated
