@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * 自动配置类
  *
- * @author gonghs
+ * @author maple
  * @version 1.0
  * @since 2020-04-11 21:30
  */
