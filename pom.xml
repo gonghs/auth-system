@@ -15,8 +15,10 @@
     <name>auth-system</name>
     <description>base auth system for Spring Boot</description>
     <modules>
-        <module>server</module>
-        <module>code-generator-spring-boot-starter</module>
+        <module>mp-server</module>
+        <module>mp-code-generator-spring-boot-starter</module>
+        <module>mp-shiro-spring-boot-starter</module>
+        <module>mp-common-core</module>
     </modules>
     <properties>
         <java.version>1.8</java.version>
@@ -43,7 +45,12 @@
         <dependencies>
             <dependency>
                 <groupId>com.maple</groupId>
-                <artifactId>code-generator-spring-boot-starter</artifactId>
+                <artifactId>mp-code-generator-spring-boot-starter</artifactId>
+                <version>${model.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.maple</groupId>
+                <artifactId>mp-common-core</artifactId>
                 <version>${model.version}</version>
             </dependency>
             <!-- json -->
