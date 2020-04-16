@@ -4,7 +4,7 @@
 
 ## 项目结构介绍
 ```
-server(主服务)
+mp-server(主服务)
 .
 ├── common (一些通用的内容 不会涉及实现)
 │   ├── anno 所有的自定义注解类
@@ -33,7 +33,8 @@ server(主服务)
 ├── service(服务层)
 ├── tool(业务相关的工具类)
 └── util(业务无关的工具类)
-code-generator-spring-boot-starter(代码生成器starter)
+mp-common-core(核心工具 提供工具依赖和一些自定义工具)
+mp-code-generator-spring-boot-starter(代码生成器starter)
 ```
 
 ## 数据库介绍
