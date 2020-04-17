@@ -43,10 +43,9 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
+            <groupId>com.maple</groupId>
+            <artifactId>mp-common-core</artifactId>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>

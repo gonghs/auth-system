@@ -46,6 +46,14 @@ mybatis-plus:
   type-enums-package: com.maple.server.common.enums
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: ALWAYS
 auth:
   login-url: /login
   success-url: /home
@@ -59,6 +67,8 @@ auth:
     - /user/checkLogin:anon
     # 放行错误页面
     - /error/**:anon
+    # 放行健康检查
+    - /actuator/**:anon
     # 放行swagger文挡
     - /doc.html:anon
     - /swagger-resources/**:anon
