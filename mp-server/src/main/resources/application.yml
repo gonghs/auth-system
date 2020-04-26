@@ -103,3 +103,8 @@ mp:
     generator:
       gen-tables: test
       model-name: test
+knife4j:
+  basic:
+    enable: true
+    username: maple
+    password: 1

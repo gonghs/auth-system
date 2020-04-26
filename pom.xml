@@ -95,20 +95,6 @@
                 <version>${knife4j.version}</version>
             </dependency>
 
-            <!-- doc.html -->
-            <dependency>
-                <groupId>com.github.xiaoymin</groupId>
-                <artifactId>swagger-bootstrap-ui</artifactId>
-                <version>${swagger-bootstrap-ui.version}</version>
-                <scope>runtime</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>io.springfox</groupId>
-                        <artifactId>springfox-swagger2</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
             <!-- database -->
             <dependency>
                 <groupId>com.baomidou</groupId>
