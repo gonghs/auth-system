@@ -22,6 +22,11 @@ public class ErrorController {
         return "error/404";
     }
 
+    @GetMapping("403")
+    public String notAuth() {
+        return "error/404";
+    }
+
     @GetMapping("500")
     public String error() {
         return "error/500";

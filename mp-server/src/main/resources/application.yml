@@ -108,6 +108,9 @@ mp:
       redis:
         enabled: true
         principal-id-field-name: id
+    advisor-auto-proxy-creator:
+      use-prefix: false
+      proxy-target-class: true
     filter-chain:
       # 放行登录页面
       - /login:anon
@@ -148,3 +151,4 @@ shiro:
     cookie:
       name: MPJSESSIONID
       maxAge: 200000
+  unauthorizedUrl: /error/403

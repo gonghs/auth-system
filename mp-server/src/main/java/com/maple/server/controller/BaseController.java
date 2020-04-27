@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.Data;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -58,6 +59,7 @@ public class BaseController<Service extends IService<T>, T> {
      * @return 返回分页数据
      */
     @Log
+    @RequiresRoles("admin")
     @PostMapping(value = "/dataTablePage")
     @ResponseBody
     @ApiOperation(value = "dataTable分页查询", notes = "分页查询")
