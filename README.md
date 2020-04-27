@@ -71,11 +71,11 @@ public List<UserDTO> queryList(String key)
 public UserDTO getUser(@CurrentUser UserDTO userDTO)
 ```
 #### 策略模式
-提供的策略实现包含三部分内容:策略工厂，策略枚举和策略服务 工厂和服务需要使用同样的枚举去标记以便将相同类型的服务聚合到同个工厂下
-工厂声明 策略使用时主要是注入工厂根据枚举值获取服务:
+提供的策略实现包含三部分内容:策略工厂，策略枚举和策略服务
+工厂声明 策略使用时主要是注入工厂根据枚举值获取服务,为了便于拓展 策略接口可由使用方自行定义:
 ```java
 @Component
-public class TestStrategyFactory extends BaseStrategyFactory<TestStrategyEnum> {}
+public class TestStrategyFactory extends BaseStrategyFactory<TestStrategyEnum, StrategyService> {}
 ```
 枚举声明 枚举的码值需要和spring的bean名称相同:
 ```java
@@ -85,7 +85,7 @@ public enum TestStrategyEnum implements BaseStrategyEnum {
      */
     SERVICE1(TestService1Impl.class, "测试策略1"), SERVICE2(TestService2Impl.class, "测试策略2");
 
-    TestStrategyEnum(Class<? extends BaseStrategyService> clazz, String strategyDesc) {
+    TestStrategyEnum(Class<?> clazz, String strategyDesc) {
         this.value = SpringUtils.getBeanNameByType(clazz);
         this.strategyDesc = strategyDesc;
     }
@@ -110,15 +110,15 @@ public enum TestStrategyEnum implements BaseStrategyEnum {
     }
 }
 ```
-服务声明 服务提供了同一个接口,如果需要返回值则实现BaseStrategyAndReturnService增加返回值的泛型参数 BaseStrategyService不需要返回值(但由于java的泛型约束 还是需要返回null):
+服务声明 提供了几个可用的接口(分别对应无参数无返回值[StrategyService] 一参数一返回值[FunctionStrategyService] 二参数一返回值[BiFunctionStrategyService]) 
+不满足需求也可自行定义:
 ```java
 @Service
 @Slf4j
-public class TestService1Impl implements BaseStrategyService<TestStrategyEnum> {
+public class TestService1Impl implements StrategyService {
     @Override
-    public Void exec() {
+    public void exec() {
         log.info("service1");
-        return null;
     }
 }
 ```
@@ -134,6 +134,7 @@ public class StrategyFactoryTest extends BaseTest {
     }
 }
 ```
+
 
 ### 前端工具
 

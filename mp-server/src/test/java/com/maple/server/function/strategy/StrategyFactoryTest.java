@@ -5,6 +5,7 @@ import com.maple.server.function.strategy.enums.TestStrategy2Enum;
 import com.maple.server.function.strategy.enums.TestStrategyEnum;
 import com.maple.server.function.strategy.factory.TestStrategy2Factory;
 import com.maple.server.function.strategy.factory.TestStrategyFactory;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,9 +24,10 @@ public class StrategyFactoryTest extends BaseTest {
 
     @Test
     public void testService() {
-        testStrategyFactory.getByType(TestStrategyEnum.SERVICE1).exec();
-        testStrategyFactory.getByType(TestStrategyEnum.SERVICE2).exec();
-        testStrategyFactory.getByType(TestStrategy2Enum.SERVICE1).exec();
+        Integer execRs = testStrategyFactory.getByType(TestStrategyEnum.SERVICE1).exec(1);
+        Integer execRs2 = testStrategyFactory.getByType(TestStrategyEnum.SERVICE2).exec(2);
+        Assert.assertEquals(execRs.intValue(), 1);
+        Assert.assertEquals(execRs2.intValue(), 2);
         testStrategy2Factory.getByType(TestStrategy2Enum.SERVICE1).exec();
         testStrategy2Factory.getByType(TestStrategy2Enum.SERVICE2).exec();
     }

@@ -1,9 +1,8 @@
 package com.maple.server.function.strategy.enums;
 
-import com.maple.server.common.entity.BaseStrategyService;
 import com.maple.server.common.enums.BaseStrategyEnum;
-import com.maple.server.function.strategy.service.TestService1Impl;
-import com.maple.server.function.strategy.service.TestService2Impl;
+import com.maple.server.function.strategy.service.TestService3Impl;
+import com.maple.server.function.strategy.service.TestService4Impl;
 import com.maple.server.utils.SpringUtils;
 
 /**
@@ -17,9 +16,9 @@ public enum TestStrategyEnum implements BaseStrategyEnum {
     /**
      * 枚举信息
      */
-    SERVICE1(TestService1Impl.class, "测试策略1"), SERVICE2(TestService2Impl.class, "测试策略2");
+    SERVICE1(TestService3Impl.class, "测试策略3"), SERVICE2(TestService4Impl.class, "测试策略4");
 
-    TestStrategyEnum(Class<? extends BaseStrategyService> clazz, String strategyDesc) {
+    TestStrategyEnum(Class<?> clazz, String strategyDesc) {
         this.value = SpringUtils.getBeanNameByType(clazz);
         this.strategyDesc = strategyDesc;
     }

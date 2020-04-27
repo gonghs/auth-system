@@ -1,6 +1,7 @@
 package com.maple.server.function.strategy.factory;
 
 import com.maple.server.common.entity.BaseStrategyFactory;
+import com.maple.server.common.entity.FunctionStrategyService;
 import com.maple.server.function.strategy.enums.TestStrategyEnum;
 import org.springframework.stereotype.Component;
 
@@ -12,5 +13,5 @@ import org.springframework.stereotype.Component;
  * @since 2020-02-26 10:30
  */
 @Component
-public class TestStrategyFactory extends BaseStrategyFactory<TestStrategyEnum> {
+public class TestStrategyFactory extends BaseStrategyFactory<TestStrategyEnum, FunctionStrategyService<Integer, Integer>> {
 }

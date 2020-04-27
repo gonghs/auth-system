@@ -1,7 +1,6 @@
 package com.maple.server.function.strategy.service;
 
-import com.maple.server.common.entity.BaseStrategyService;
-import com.maple.server.function.strategy.enums.TestStrategyEnum;
+import com.maple.server.common.entity.StrategyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +13,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
-public class TestService1Impl implements BaseStrategyService<TestStrategyEnum> {
+public class TestService1Impl implements StrategyService {
     @Override
-    public Void exec() {
-        log.info("service1");
-        return null;
+    public void exec() {
+        log.info("no args service1");
     }
 }

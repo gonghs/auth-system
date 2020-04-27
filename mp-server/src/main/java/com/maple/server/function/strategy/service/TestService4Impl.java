@@ -1,7 +1,6 @@
 package com.maple.server.function.strategy.service;
 
-import com.maple.server.common.entity.BaseStrategyService;
-import com.maple.server.function.strategy.enums.TestStrategy2Enum;
+import com.maple.server.common.entity.FunctionStrategyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +13,10 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
-public class TestService4Impl implements BaseStrategyService<TestStrategy2Enum> {
+public class TestService4Impl implements FunctionStrategyService<Integer, Integer> {
     @Override
-    public Void exec() {
-        log.info("service4");
-        return null;
+    public Integer exec(Integer integer) {
+        log.info("service4(integer arg):  arg:{}", integer);
+        return integer;
     }
 }

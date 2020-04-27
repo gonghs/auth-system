@@ -48,10 +48,6 @@
             </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
         <!-- shiro -->
         <dependency>
             <groupId>org.apache.shiro</groupId>
