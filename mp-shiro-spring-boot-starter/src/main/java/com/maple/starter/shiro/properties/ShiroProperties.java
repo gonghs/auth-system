@@ -15,20 +15,8 @@ import java.util.List;
  */
 @Data
 @Configuration
-@ConfigurationProperties("mp.auth")
-public class AuthProperties {
-    /**
-     * 登录路径
-     */
-    private String loginUrl;
-    /**
-     * 登录成功跳转路径
-     */
-    private String successUrl;
-    /**
-     * 无权限路径
-     */
-    private String unauthorizedUrl;
+@ConfigurationProperties("mp.shiro")
+public class ShiroProperties {
     /**
      * 过滤链
      */

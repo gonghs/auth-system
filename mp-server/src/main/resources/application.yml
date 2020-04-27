@@ -54,38 +54,38 @@ management:
   endpoint:
     health:
       show-details: ALWAYS
-auth:
-  login-url: /login
-  success-url: /home
-  unauthorized-url: /error
-  filter-chain:
-    # 放行登录页面
-    - /login:anon
-    # 配置退出过滤器,具体的退出代码Shiro已经实现
-    - /logout:logout
-    # 放行登陆验证
-    - /user/checkLogin:anon
-    # 放行错误页面
-    - /error/**:anon
-    # 放行健康检查
-    - /actuator/**:anon
-    # 放行swagger文挡
-    - /doc.html:anon
-    - /swagger-resources/**:anon
-    - /swagger-ui.html:anon
-    - /v2/**:anon
-    - /webjars/**:anon
-    # 配置记住我或认证通过可以访问的地址
-    - /user/userList:user
-    - /:user
-    # 配置静态资源放行
-    - /css/**:anon
-    - /common/**:anon
-    - /js/**:anon
-    - /images/*/**:anon
-    - /user/login:anon
-    # 其他所有url都必须认证通过才可以访问
-    - /**:kickout,authc
+#auth:
+#  login-url: /login
+#  success-url: /home
+#  unauthorized-url: /error
+#  filter-chain:
+#    # 放行登录页面
+#    - /login:anon
+#    # 配置退出过滤器,具体的退出代码Shiro已经实现
+#    - /logout:logout
+#    # 放行登陆验证
+#    - /user/checkLogin:anon
+#    # 放行错误页面
+#    - /error/**:anon
+#    # 放行健康检查
+#    - /actuator/**:anon
+#    # 放行swagger文挡
+#    - /doc.html:anon
+#    - /swagger-resources/**:anon
+#    - /swagger-ui.html:anon
+#    - /v2/**:anon
+#    - /webjars/**:anon
+#    # 配置记住我或认证通过可以访问的地址
+#    - /user/userList:user
+#    - /:user
+#    # 配置静态资源放行
+#    - /css/**:anon
+#    - /common/**:anon
+#    - /js/**:anon
+#    - /images/*/**:anon
+#    - /user/login:anon
+#    # 其他所有url都必须认证通过才可以访问
+#    - /**:kickout,authc
 cache:
   prefix: custom-cache-
 logging:
@@ -103,8 +103,47 @@ mp:
     generator:
       gen-tables: test
       model-name: test
+  shiro:
+    cache:
+      redis:
+        enabled: true
+        principal-id-field-name: id
+    filter-chain:
+      # 放行登录页面
+      - /login:anon
+      # 配置退出过滤器,具体的退出代码Shiro已经实现
+      - /logout:logout
+      # 放行登陆验证
+      - /user/checkLogin:anon
+      # 放行错误页面
+      - /error/**:anon
+      # 放行健康检查
+      - /actuator/**:anon
+      # 放行swagger文挡
+      - /doc.html:anon
+      - /swagger-resources/**:anon
+      - /swagger-ui.html:anon
+      - /v2/**:anon
+      - /webjars/**:anon
+      # 配置记住我或认证通过可以访问的地址
+      - /user/userList:user
+      - /:user
+      # 配置静态资源放行
+      - /css/**:anon
+      - /common/**:anon
+      - /js/**:anon
+      - /images/*/**:anon
+      - /user/login:anon
+      # 其他所有url都必须认证通过才可以访问
+      - /**:authc
 knife4j:
   basic:
     enable: true
     username: maple
     password: 1
+shiro:
+  loginUrl: /login
+  successUrl: /
+  sessionManager:
+    cookie:
+      name: MPJSESSIONID

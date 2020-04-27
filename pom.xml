@@ -34,6 +34,7 @@
         <dozer.version>6.5.0</dozer.version>
         <shiro.version>1.4.1</shiro.version>
         <shiro-redis.version>3.2.3</shiro-redis.version>
+        <shiro-starter.version>1.5.2</shiro-starter.version>
         <hutool.version>5.0.3</hutool.version>
         <inject.version>1</inject.version>
         <xxl-job.version>2.1.0</xxl-job.version>
@@ -46,6 +47,11 @@
             <dependency>
                 <groupId>com.maple</groupId>
                 <artifactId>mp-code-generator-spring-boot-starter</artifactId>
+                <version>${model.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.maple</groupId>
+                <artifactId>mp-shiro-spring-boot-starter</artifactId>
                 <version>${model.version}</version>
             </dependency>
             <dependency>
@@ -116,15 +122,8 @@
             <!-- shiro -->
             <dependency>
                 <groupId>org.apache.shiro</groupId>
-                <artifactId>shiro-all</artifactId>
-                <version>${shiro.version}</version>
-                <type>pom</type>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.shiro</groupId>
-                        <artifactId>shiro-quartz</artifactId>
-                    </exclusion>
-                </exclusions>
+                <artifactId>shiro-spring-boot-web-starter</artifactId>
+                <version>${shiro-starter.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.crazycake</groupId>

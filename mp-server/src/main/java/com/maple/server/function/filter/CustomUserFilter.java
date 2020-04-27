@@ -26,14 +26,10 @@ public class CustomUserFilter extends FormAuthenticationFilter {
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) {
         if (isLoginRequest(request, response)) {
             if (isLoginSubmission(request, response)) {
-                if (log.isTraceEnabled()) {
-                    log.trace("Login submission detected.  Attempting to execute login.");
-                }
+                log.info("Login submission detected.  Attempting to execute login.");
                 return executeLogin(request, response);
             } else {
-                if (log.isTraceEnabled()) {
-                    log.trace("Login page view.");
-                }
+                log.info("Login page view.");
                 return true;
             }
         } else {
@@ -43,10 +39,9 @@ public class CustomUserFilter extends FormAuthenticationFilter {
                 httpServletResponse.sendError(401);
                 return false;
             } else {
-                if (log.isTraceEnabled()) {
-                    log.trace("Attempting to access a path which requires authentication.  Forwarding to the " +
-                            "Authentication url [" + getLoginUrl() + "]");
-                }
+                log.info("This page is accessed without authorization. You will return to the login page. " +
+                                "RequestUri:{} LoginPageUri:{}  ",
+                        httpRequest.getRequestURI(), getLoginUrl());
                 saveRequestAndRedirectToLogin(request, response);
             }
 
