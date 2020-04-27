@@ -1068,7 +1068,7 @@ ul.tpl-dropdown-content .tpl-dropdown-menu-messages-item .menu-messages-content 
     -moz-border-radius: 0;
     -ms-border-radius: 0;
     -o-border-radius: 0;
-    padding: 6px 0;
+    padding: 6px;
     font-size: 14px;
 }
 
