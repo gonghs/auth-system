@@ -22,8 +22,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableConfigurationProperties(ShiroProperties.class)
 public class ShiroAutoConfiguration {
-    @Autowired
-    private ShiroProperties shiroProperties;
+    private final ShiroProperties shiroProperties;
+
+    public ShiroAutoConfiguration(ShiroProperties shiroProperties) {
+        this.shiroProperties = shiroProperties;
+    }
 
     @Bean
     @ConditionalOnMissingBean

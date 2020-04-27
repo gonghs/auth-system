@@ -3,6 +3,7 @@ package com.maple.server.config;
 import com.maple.server.common.entity.MyRealm;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.realm.Realm;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
@@ -23,8 +24,9 @@ public class ShiroConfig {
      * 3.创建身份认证 Realm
      */
     @Bean
-    public Realm shiroRealm() {
+    public Realm shiroRealm(CacheManager cacheManager) {
         MyRealm realm = new MyRealm();
+        realm.setCacheManager(cacheManager);
         realm.setCredentialsMatcher(hashedCredentialsMatcher());
         return realm;
     }

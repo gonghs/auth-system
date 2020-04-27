@@ -147,3 +147,4 @@ shiro:
   sessionManager:
     cookie:
       name: MPJSESSIONID
+      maxAge: 200000
