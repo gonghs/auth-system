@@ -3,16 +3,28 @@ package com.maple.starter.shiro;
 import com.maple.common.constant.SymbolConst;
 import com.maple.starter.shiro.properties.ShiroProperties;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.boot.autoconfigure.ShiroAnnotationProcessorAutoConfiguration;
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
 import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.BeanDefinitionHolder;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 自动配置类
@@ -23,13 +35,15 @@ import org.springframework.context.annotation.Configuration;
  */
 @Slf4j
 @Configuration
-@AutoConfigureBefore({ShiroRedisAutoConfiguration.class, ShiroAnnotationProcessorAutoConfiguration.class})
-@EnableConfigurationProperties(ShiroProperties.class)
-public class ShiroAutoConfiguration {
+@AutoConfigureBefore({org.apache.shiro.spring.boot.autoconfigure.ShiroAutoConfiguration.class,
+        ShiroAnnotationProcessorAutoConfiguration.class})
+public class ShiroAutoConfiguration implements ApplicationContextAware, InitializingBean {
     private final ShiroProperties shiroProperties;
+    private final AtomicLong counter = new AtomicLong(0);
+    private ConfigurableApplicationContext applicationContext;
 
     public ShiroAutoConfiguration(ShiroProperties shiroProperties) {
-        this.shiroProperties = shiroProperties;
+        this.shiroProperties = shiroProperties.afterPropertiesSet();
     }
 
     @Bean
@@ -53,7 +67,7 @@ public class ShiroAutoConfiguration {
     /**
      * 由于多重代理的原因 如果userPrefix和proxyTargetClass都为false会导致 aop和shiro权限注解不兼容 资源报错404
      * 因此两个属性至少需要其中一个属性为true才可以
-     * // 猜测结果: 尚未验证
+     * // 猜测原因: （尚未验证）
      * (userPrefix将实际的bean名称进行了变更因此aop和shiro取到的不是同一个对象 而proxyTargetClass基于类代理不同的代理方式也能解决代理冲突)
      */
     @Bean
@@ -64,5 +78,28 @@ public class ShiroAutoConfiguration {
         defaultAdvisorAutoProxyCreator.setUsePrefix(shiroProperties.getAdvisorAutoProxyCreator().getUsePrefix());
         defaultAdvisorAutoProxyCreator.setProxyTargetClass(shiroProperties.getAdvisorAutoProxyCreator().getProxyTargetClass());
         return defaultAdvisorAutoProxyCreator;
+    }
+
+    @Override
+    public void afterPropertiesSet() {
+        shiroProperties.realms().forEach(item -> {
+            registerContainer(item.getName(), item);
+        });
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = (ConfigurableApplicationContext) applicationContext;
+    }
+
+    private void registerContainer(String beanName, Realm realm) {
+        BeanDefinitionBuilder beanBuilder =
+                BeanDefinitionBuilder.genericBeanDefinition(Realm.class, () -> realm);
+        beanBuilder.setScope(BeanDefinition.SCOPE_PROTOTYPE);
+        String containerBeanName = String.format("%s_%s", beanName, counter.incrementAndGet());
+        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) applicationContext.getBeanFactory();
+        BeanDefinitionReaderUtils.registerBeanDefinition(new BeanDefinitionHolder(beanBuilder.getBeanDefinition(),containerBeanName),
+                beanFactory);
+//        beanFactory.registerBeanDefinition(containerBeanName, beanBuilder.getBeanDefinition());
     }
 }

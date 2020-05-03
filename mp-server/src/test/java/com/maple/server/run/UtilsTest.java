@@ -1,8 +1,12 @@
 package com.maple.server.run;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
+import com.maple.server.common.entity.MyRealm;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -26,5 +30,27 @@ public class TestMain {
     @Test
     public void testUrlUtil() {
         log.info(URLUtil.getURL("/src/main/java").toString());
+    }
+
+    @Test
+    public void testBeanUtil() {
+        MyRealm bean = new MyRealm();
+        bean.setCachingEnabled(false);
+        BeanUtil.setProperty(bean, "cachingEnabled", true);
+        BeanUtil.setProperty(bean, "caching-enabled", true);
+        log.info(bean.toString());
+    }
+
+    @Test
+    public void testSub() {
+        String string = "aaa_111_111";
+        log.info("切割前: {}",string);
+        log.info("切割后: {}", StrUtil.subBefore(string, "_", true));
+    }
+
+    @Test
+    public void testEqualAny() {
+        String[] arr = {"pdf", "doc", "docx"};
+        log.info("{}",StringUtils.equalsAny("docx", arr));
     }
 }

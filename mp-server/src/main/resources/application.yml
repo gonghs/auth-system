@@ -139,6 +139,15 @@ mp:
       - /user/login:anon
       # 其他所有url都必须认证通过才可以访问
       - /**:authc
+    realms:
+      - realm:
+          target: com.maple.server.common.entity.MyRealm
+          credentials-matcher:
+            target: org.apache.shiro.authc.credential.HashedCredentialsMatcher
+            property:
+              hashAlgorithmName: MD5
+              hashIterations: 2
+              storedCredentialsHexEncoded: true
 knife4j:
   basic:
     enable: true

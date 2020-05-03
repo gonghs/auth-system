@@ -3,14 +3,20 @@ package com.maple.starter.shiro.properties;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
+import org.apache.shiro.realm.AuthenticatingRealm;
 import org.apache.shiro.realm.Realm;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 权限相关配置
@@ -20,6 +26,7 @@ import java.util.Map;
  * @since 2020-03-11 14:00
  */
 @Data
+@Slf4j
 @Configuration
 @ConfigurationProperties("mp.shiro")
 public class ShiroProperties {
@@ -36,10 +43,53 @@ public class ShiroProperties {
      */
     private AutoProxyCreator advisorAutoProxyCreator = new AutoProxyCreator();
 
+    public List<Realm> realms() {
+        return realms.stream()
+                .map(realmDefinition -> realmDefinition.getRealm().getTarget())
+                .collect(Collectors.toList());
+    }
+
+    public ShiroProperties afterPropertiesSet() {
+        for (ShiroProperties.RealmDefinition realmDefinition : this.getRealms()) {
+            setRealmProperty(realmDefinition);
+            setCredentialsMatcherProperty(realmDefinition);
+            setReamCredentialsMatcher(realmDefinition);
+        }
+        return this;
+    }
+
+    private void setReamCredentialsMatcher(RealmDefinition realmDefinition) {
+        if (realmDefinition.getRealm().getTarget() instanceof AuthenticatingRealm) {
+            ((AuthenticatingRealm) realmDefinition.getRealm().getTarget()).setCredentialsMatcher(realmDefinition.getRealm().getCredentialsMatcher().getTarget());
+        }
+    }
+
+    private void setCredentialsMatcherProperty(RealmDefinition realmDefinition) {
+        CredentialsMatcherDefinition credentialsMatcherDefinition =
+                realmDefinition.getRealm().getCredentialsMatcher();
+        CredentialsMatcher matcher = credentialsMatcherDefinition.getTarget();
+        credentialsMatcherDefinition.getProperty().forEach((propertyName, propertyValue) -> {
+            try {
+                BeanUtils.setProperty(matcher, propertyName, propertyValue);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                log.error("设置CredentialsMatcher属性失败", e);
+            }
+        });
+    }
+
+    private void setRealmProperty(RealmDefinition realmDefinition) {
+        realmDefinition.getRealm().getProperty().forEach((propertyName, propertyValue) -> {
+            try {
+                BeanUtils.setProperty(realmDefinition, propertyName, propertyValue);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                log.error("设置Realm属性失败", e);
+            }
+        });
+    }
 
     @Getter
     @Setter
-    public class RealmDefinition {
+    public static class RealmDefinition {
         /**
          * realm原型
          */
@@ -48,20 +98,25 @@ public class ShiroProperties {
 
     @Getter
     @Setter
-    public class RealmProperty {
+    public static class RealmProperty {
         /**
          * 类对象
          */
         private Realm target;
-        private Map<String, Object> property;
-        private CredentialsMatcherDefinition credentialsMatcher;
+        /**
+         * bean名称
+         */
+        private String name;
+        private Map<String, Object> property = new HashMap<>();
+        private CredentialsMatcherDefinition credentialsMatcher = new CredentialsMatcherDefinition();
+    }
 
-        @Getter
-        @Setter
-        class CredentialsMatcherDefinition {
-            private CredentialsMatcher target;
-            private Map<String, Object> property;
-        }
+
+    @Getter
+    @Setter
+    public static class CredentialsMatcherDefinition {
+        private CredentialsMatcher target;
+        private Map<String, Object> property = new HashMap<>();
     }
 
     @Getter

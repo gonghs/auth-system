@@ -9,12 +9,16 @@ import org.apache.shiro.spring.web.config.AbstractShiroWebConfiguration;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.crazycake.shiro.RedisManager;
 import org.crazycake.shiro.RedisSessionDAO;
+import org.springframework.beans.BeansException;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -29,11 +33,12 @@ import java.util.List;
  */
 @Configuration
 @ConditionalOnProperty(value = "mp.shiro.cache.redis.enabled", havingValue = "true")
-@AutoConfigureAfter(RedisAutoConfiguration.class)
+@AutoConfigureAfter({ShiroAutoConfiguration.class, RedisAutoConfiguration.class})
 @EnableConfigurationProperties({ShiroRedisProperties.class, RedisProperties.class})
-public class ShiroRedisAutoConfiguration extends AbstractShiroWebConfiguration {
+public class ShiroRedisAutoConfiguration extends AbstractShiroWebConfiguration implements ApplicationContextAware {
     private final RedisProperties redisProperties;
     private final ShiroRedisProperties shiroRedisProperties;
+    private ConfigurableApplicationContext applicationContext;
 
     public ShiroRedisAutoConfiguration(RedisProperties redisProperties, ShiroRedisProperties shiroRedisProperties) {
         this.redisProperties = redisProperties;
@@ -88,5 +93,10 @@ public class ShiroRedisAutoConfiguration extends AbstractShiroWebConfiguration {
         SessionsSecurityManager securityManager = super.securityManager(realms);
         securityManager.setSessionManager(webSessionManager);
         return securityManager;
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = (ConfigurableApplicationContext) applicationContext;
     }
 }
