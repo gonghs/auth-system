@@ -1,10 +1,12 @@
 package com.maple.starter.shiro;
 
+import cn.hutool.core.collection.CollUtil;
 import com.maple.common.constant.SymbolConst;
 import com.maple.starter.shiro.properties.ShiroProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.boot.autoconfigure.ShiroAnnotationProcessorAutoConfiguration;
+import org.apache.shiro.spring.boot.autoconfigure.exception.NoRealmBeanConfiguredException;
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
 import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
@@ -80,6 +82,22 @@ public class ShiroAutoConfiguration implements ApplicationContextAware, Initiali
         return defaultAdvisorAutoProxyCreator;
     }
 
+
+    /**
+     * FIXME 之后尝试解决这个问题
+     * 先声明一个占位的bean 原因在于使用registerContainer注入的bean 无法被ConditionalOnMissingBean识别
+     * (也可能是springboot是否注入bean是一开始就确定的 而不是执行前尝试获取bean才确定)
+     * 也就是说这里本质上是防止 org.apache.shiro.spring.boot.autoconfigure.ShiroAutoConfiguration抛出异常
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public Realm missRealm() {
+        if (CollUtil.isEmpty(shiroProperties.realms())) {
+            throw new NoRealmBeanConfiguredException();
+        }
+        return null;
+    }
+
     @Override
     public void afterPropertiesSet() {
         shiroProperties.realms().forEach(item -> {
@@ -98,8 +116,9 @@ public class ShiroAutoConfiguration implements ApplicationContextAware, Initiali
         beanBuilder.setScope(BeanDefinition.SCOPE_PROTOTYPE);
         String containerBeanName = String.format("%s_%s", beanName, counter.incrementAndGet());
         DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) applicationContext.getBeanFactory();
-        BeanDefinitionReaderUtils.registerBeanDefinition(new BeanDefinitionHolder(beanBuilder.getBeanDefinition(),containerBeanName),
+        BeanDefinitionReaderUtils.registerBeanDefinition(new BeanDefinitionHolder(beanBuilder.getBeanDefinition(),
+                        containerBeanName),
                 beanFactory);
-//        beanFactory.registerBeanDefinition(containerBeanName, beanBuilder.getBeanDefinition());
+        //        beanFactory.registerBeanDefinition(containerBeanName, beanBuilder.getBeanDefinition());
     }
 }
