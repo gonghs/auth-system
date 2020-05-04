@@ -1,6 +1,7 @@
 package com.maple.starter.shiro;
 
 import com.maple.starter.shiro.properties.ShiroRedisProperties;
+import lombok.AllArgsConstructor;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.mgt.SessionsSecurityManager;
 import org.apache.shiro.realm.Realm;
@@ -9,16 +10,12 @@ import org.apache.shiro.spring.web.config.AbstractShiroWebConfiguration;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.crazycake.shiro.RedisManager;
 import org.crazycake.shiro.RedisSessionDAO;
-import org.springframework.beans.BeansException;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -32,18 +29,13 @@ import java.util.List;
  * @since 2020-04-27 15:03
  */
 @Configuration
+@AllArgsConstructor
 @ConditionalOnProperty(value = "mp.shiro.cache.redis.enabled", havingValue = "true")
 @AutoConfigureAfter({ShiroAutoConfiguration.class, RedisAutoConfiguration.class})
 @EnableConfigurationProperties({ShiroRedisProperties.class, RedisProperties.class})
-public class ShiroRedisAutoConfiguration extends AbstractShiroWebConfiguration implements ApplicationContextAware {
+public class ShiroRedisAutoConfiguration extends AbstractShiroWebConfiguration {
     private final RedisProperties redisProperties;
     private final ShiroRedisProperties shiroRedisProperties;
-    private ConfigurableApplicationContext applicationContext;
-
-    public ShiroRedisAutoConfiguration(RedisProperties redisProperties, ShiroRedisProperties shiroRedisProperties) {
-        this.redisProperties = redisProperties;
-        this.shiroRedisProperties = shiroRedisProperties;
-    }
 
     /**
      * redis缓存管理器
@@ -93,10 +85,5 @@ public class ShiroRedisAutoConfiguration extends AbstractShiroWebConfiguration i
         SessionsSecurityManager securityManager = super.securityManager(realms);
         securityManager.setSessionManager(webSessionManager);
         return securityManager;
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = (ConfigurableApplicationContext) applicationContext;
     }
 }

@@ -3,6 +3,7 @@ package com.maple.starter.shiro;
 import cn.hutool.core.collection.CollUtil;
 import com.maple.common.constant.SymbolConst;
 import com.maple.starter.shiro.properties.ShiroProperties;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.boot.autoconfigure.ShiroAnnotationProcessorAutoConfiguration;
@@ -10,21 +11,13 @@ import org.apache.shiro.spring.boot.autoconfigure.exception.NoRealmBeanConfigure
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
 import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.BeanDefinitionHolder;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.GenericApplicationContext;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -37,16 +30,13 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 @Slf4j
 @Configuration
+@AllArgsConstructor
 @AutoConfigureBefore({org.apache.shiro.spring.boot.autoconfigure.ShiroAutoConfiguration.class,
         ShiroAnnotationProcessorAutoConfiguration.class})
-public class ShiroAutoConfiguration implements ApplicationContextAware, InitializingBean {
+public class ShiroAutoConfiguration implements InitializingBean {
     private final ShiroProperties shiroProperties;
     private final AtomicLong counter = new AtomicLong(0);
-    private ConfigurableApplicationContext applicationContext;
-
-    public ShiroAutoConfiguration(ShiroProperties shiroProperties) {
-        this.shiroProperties = shiroProperties.afterPropertiesSet();
-    }
+    private final GenericApplicationContext genericApplicationContext;
 
     @Bean
     @ConditionalOnMissingBean
@@ -101,24 +91,7 @@ public class ShiroAutoConfiguration implements ApplicationContextAware, Initiali
     @Override
     public void afterPropertiesSet() {
         shiroProperties.realms().forEach(item -> {
-            registerContainer(item.getName(), item);
+            genericApplicationContext.registerBean(String.format("%s_%s", item.getName(), counter.incrementAndGet()), Realm.class, () -> item);
         });
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = (ConfigurableApplicationContext) applicationContext;
-    }
-
-    private void registerContainer(String beanName, Realm realm) {
-        BeanDefinitionBuilder beanBuilder =
-                BeanDefinitionBuilder.genericBeanDefinition(Realm.class, () -> realm);
-        beanBuilder.setScope(BeanDefinition.SCOPE_PROTOTYPE);
-        String containerBeanName = String.format("%s_%s", beanName, counter.incrementAndGet());
-        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) applicationContext.getBeanFactory();
-        BeanDefinitionReaderUtils.registerBeanDefinition(new BeanDefinitionHolder(beanBuilder.getBeanDefinition(),
-                        containerBeanName),
-                beanFactory);
-        //        beanFactory.registerBeanDefinition(containerBeanName, beanBuilder.getBeanDefinition());
     }
 }

@@ -8,6 +8,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.realm.AuthenticatingRealm;
 import org.apache.shiro.realm.Realm;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Configuration
 @ConfigurationProperties("mp.shiro")
-public class ShiroProperties {
+public class ShiroProperties implements InitializingBean {
     /**
      * 过滤链
      */
@@ -49,13 +50,13 @@ public class ShiroProperties {
                 .collect(Collectors.toList());
     }
 
-    public ShiroProperties afterPropertiesSet() {
+    @Override
+    public void afterPropertiesSet() {
         for (ShiroProperties.RealmDefinition realmDefinition : this.getRealms()) {
             setRealmProperty(realmDefinition);
             setCredentialsMatcherProperty(realmDefinition);
             setReamCredentialsMatcher(realmDefinition);
         }
-        return this;
     }
 
     private void setReamCredentialsMatcher(RealmDefinition realmDefinition) {
