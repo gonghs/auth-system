@@ -11,14 +11,14 @@ import org.junit.Test;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- * 直接运行的测试类
+ * huTools/apacheUtils 测试
  *
  * @author maple
  * @version 1.0
  * @since 2020-02-27 11:52
  */
 @Slf4j
-public class TestMain {
+public class UtilsTest {
     @Test
     public void testClassUtils() {
         System.out.println(ClassUtils.isAssignable(new Class[]{ModelAndView.class, String.class}, ModelAndView.class,String.class));
