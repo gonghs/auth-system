@@ -109,8 +109,8 @@ mp:
         enabled: true
         principal-id-field-name: id
     advisor-auto-proxy-creator:
-      use-prefix: false
-      proxy-target-class: true
+      use-prefix: true
+      proxy-target-class: false
     filter-chain:
       # 放行登录页面
       - /login:anon

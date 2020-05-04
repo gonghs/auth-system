@@ -132,6 +132,10 @@ public class ShiroProperties implements InitializingBean {
          */
         private Boolean usePrefix = true;
         /**
+         * bean名称
+         */
+        private String beanName;
+        /**
          * 是否启用类代理
          */
         private Boolean proxyTargetClass = true;

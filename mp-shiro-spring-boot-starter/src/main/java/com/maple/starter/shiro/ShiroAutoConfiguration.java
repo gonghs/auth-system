@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.GenericApplicationContext;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -69,6 +70,7 @@ public class ShiroAutoConfiguration implements InitializingBean {
         DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
         defaultAdvisorAutoProxyCreator.setUsePrefix(shiroProperties.getAdvisorAutoProxyCreator().getUsePrefix());
         defaultAdvisorAutoProxyCreator.setProxyTargetClass(shiroProperties.getAdvisorAutoProxyCreator().getProxyTargetClass());
+        Optional.ofNullable(shiroProperties.getAdvisorAutoProxyCreator().getBeanName()).ifPresent(defaultAdvisorAutoProxyCreator::setBeanName);
         return defaultAdvisorAutoProxyCreator;
     }
 
