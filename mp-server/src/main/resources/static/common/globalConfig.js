@@ -5,15 +5,29 @@ $.ajaxSetup({
     global: true,
     type: "POST",
     error: function (xhr, status, error) {
-        if (xhr.status === 401) {
-            Message.error("您的账号已经异地登录,请返回登录页重试");
+        switch (xhr.status) {
+            case 401:
+                Message.error("您的账号已经异地登录,请返回登录页重试");
+                break;
+            case 403:
+                Message.error("该资源您无权限访问,请联系管理员取得权限再试")
+                break;
+            default :
+                Message.error("阿偶,服务器发生了一个异常,抱歉奔溃了")
         }
     }
 });
 $.fn.dataTable.ext.errMode = function (settings, tn, msg) {
     console.log(msg);
-    if (settings.jqXHR.status === 401) {
-        Message.error("您的账号已经异地登录,请返回登录页重试");
+    switch (settings.jqXHR.status) {
+        case 401:
+            Message.error("您的账号已经异地登录,请返回登录页重试");
+            break;
+        case 403:
+            Message.error("该资源您无权限访问,请联系管理员取得权限再试")
+            break;
+        default :
+            Message.error("阿偶,服务器发生了一个异常,抱歉奔溃了")
     }
 };
 

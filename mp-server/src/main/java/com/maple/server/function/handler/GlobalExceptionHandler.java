@@ -6,11 +6,14 @@ import com.maple.server.common.exception.AuthException;
 import com.maple.server.common.exception.ErrorCode;
 import com.maple.server.common.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,9 +41,23 @@ public class GlobalExceptionHandler {
      * @return 异常结果对象
      */
     @ExceptionHandler(value = {ServiceException.class})
-    public Result serviceException(ServiceException ex) {
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Result<Object> serviceException(ServiceException ex) {
         logThrowable(false, request, ex);
         return Results.failure(ex);
+    }
+
+    /**
+     * shiro无权限异常
+     *
+     * @param ex 异常
+     * @return 异常结果对象
+     */
+    @ExceptionHandler(value = {UnauthorizedException.class})
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Result<Object> serviceException(UnauthorizedException ex) {
+        logThrowable(false, request, ex);
+        return Results.failure(ErrorCode.AUTH_ERROR.code(), ex.getMessage()).setDetail(ex.getMessage());
     }
 
     /**
@@ -50,7 +67,8 @@ public class GlobalExceptionHandler {
      * @return 异常结果对象
      */
     @ExceptionHandler(value = {AuthException.class})
-    public Result authException(AuthException ex) {
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Result<Object> authException(AuthException ex) {
         logThrowable(false, request, ex);
         return Results.failure(ErrorCode.AUTH_ERROR.code(), ex.getMessage()).setDetail(ex.getMessage());
     }
@@ -62,7 +80,8 @@ public class GlobalExceptionHandler {
      * @return 异常结果对象
      */
     @ExceptionHandler(value = {ConstraintViolationException.class})
-    public Result constraintViolationException(ConstraintViolationException ex) {
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    public Result<Object> constraintViolationException(ConstraintViolationException ex) {
         // 获取调试信息(具体校验失败字段)
         String detail = ex.getConstraintViolations().stream().map(item ->
                 String.format("fieldName: %s,message: %s", item.getPropertyPath(), item.getMessage()))
@@ -78,7 +97,8 @@ public class GlobalExceptionHandler {
      * @return 异常结果对象
      */
     @ExceptionHandler(value = {MethodArgumentNotValidException.class})
-    public Result methodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    public Result<Object> methodArgumentNotValidException(MethodArgumentNotValidException ex) {
         // 获取调试信息(具体校验失败字段)
         String detail = ex.getBindingResult().getFieldErrors().stream().map(item ->
                 String.format("fieldName: %s,message: %s", item.getField(), item.getDefaultMessage()))
@@ -94,7 +114,8 @@ public class GlobalExceptionHandler {
      * @return 异常结果对象
      */
     @ExceptionHandler(value = {BindException.class})
-    public Result bindException(BindException ex) {
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    public Result<Object> bindException(BindException ex) {
         // 获取调试信息(具体校验失败字段)
         String detail = ex.getFieldErrors().stream().map(item ->
                 String.format("fieldName: %s,message: %s", item.getField(), item.getDefaultMessage()))
@@ -104,7 +125,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = Throwable.class)
-    public Result defaultErrorHandler(Throwable throwable) {
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Result<Object> defaultErrorHandler(Throwable throwable) {
         logThrowable(true, request, throwable);
         return Results.failure(ErrorCode.UNKNOWN_ERROR.code(), ErrorCode.UNKNOWN_ERROR.message()).setDetail(throwable.getMessage());
     }

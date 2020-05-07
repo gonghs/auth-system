@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.maple.server.common.anno.JsonArg;
-import com.maple.server.common.anno.Log;
 import com.maple.server.common.builder.Results;
 import com.maple.server.common.entity.ReqPage;
 import com.maple.server.common.entity.Result;
@@ -15,7 +14,6 @@ import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.Data;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -58,8 +56,6 @@ public class BaseController<Service extends IService<T>, T> {
      * @param model 实体查询条件
      * @return 返回分页数据
      */
-    @Log
-    @RequiresRoles("admin")
     @PostMapping(value = "/dataTablePage")
     @ResponseBody
     @ApiOperation(value = "dataTable分页查询", notes = "分页查询")
