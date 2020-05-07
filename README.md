@@ -35,6 +35,7 @@ mp-server(主服务)
 └── util(业务无关的工具类)
 mp-common-core(核心工具 提供工具依赖和一些自定义工具)
 mp-code-generator-spring-boot-starter(代码生成器starter)
+mp-shiro-spring-boot-starter(shiro starter)
 ```
 
 ## 数据库介绍
