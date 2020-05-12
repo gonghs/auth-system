@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.boot.autoconfigure.ShiroAnnotationProcessorAutoConfiguration;
 import org.apache.shiro.spring.boot.autoconfigure.exception.NoRealmBeanConfiguredException;
+import org.apache.shiro.spring.config.web.autoconfigure.ShiroWebFilterConfiguration;
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
 import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
@@ -19,6 +20,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.GenericApplicationContext;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -33,7 +35,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Configuration
 @AllArgsConstructor
 @AutoConfigureBefore({org.apache.shiro.spring.boot.autoconfigure.ShiroAutoConfiguration.class,
-        ShiroAnnotationProcessorAutoConfiguration.class})
+        ShiroAnnotationProcessorAutoConfiguration.class, ShiroWebFilterConfiguration.class})
 public class ShiroAutoConfiguration implements InitializingBean {
     private final ShiroProperties shiroProperties;
     private final AtomicLong counter = new AtomicLong(0);
@@ -55,7 +57,6 @@ public class ShiroAutoConfiguration implements InitializingBean {
         });
         return chainDefinition;
     }
-
 
     /**
      * 由于多重代理的原因 如果userPrefix和proxyTargetClass都为false会导致 aop和shiro权限注解不兼容 资源报错404
@@ -92,8 +93,15 @@ public class ShiroAutoConfiguration implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
+        // init realms
         shiroProperties.realms().forEach(item -> {
-            genericApplicationContext.registerBean(String.format("%s_%s", item.getName(), counter.incrementAndGet()), Realm.class, () -> item);
+            String name =
+                    Optional.ofNullable(item.getName()).orElse(item.getClass().getName() + Objects.toString(counter.incrementAndGet()));
+            genericApplicationContext.registerBean(name, Realm.class, () -> item);
         });
+        // 猜测与org.apache.shiro.spring.config.web.autoconfigure FilterRegistrationBean自动配置有关
+        // 使用此方式自动注册之后会使过滤链顺序失效 凡带有 /**:[filter] 的无视所有规则拦截所有
+        //        shiroProperties.getFilters().forEach((key,val) -> genericApplicationContext.registerBean(key,
+        //        Filter.class, () -> val));
     }
 }

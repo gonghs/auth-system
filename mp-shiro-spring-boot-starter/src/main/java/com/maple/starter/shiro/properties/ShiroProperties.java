@@ -12,11 +12,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import javax.servlet.Filter;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -88,6 +86,17 @@ public class ShiroProperties implements InitializingBean {
         });
     }
 
+    /**
+     * filter定义
+     */
+    @Getter
+    @Setter
+    public static class FilterDefinition {
+        private String name;
+        private Filter filter;
+    }
+
+
     @Getter
     @Setter
     public static class RealmDefinition {
@@ -104,10 +113,6 @@ public class ShiroProperties implements InitializingBean {
          * 类对象
          */
         private Realm target;
-        /**
-         * bean名称
-         */
-        private String name;
         private Map<String, Object> property = new HashMap<>();
         private CredentialsMatcherDefinition credentialsMatcher = new CredentialsMatcherDefinition();
     }
@@ -122,7 +127,7 @@ public class ShiroProperties implements InitializingBean {
 
     @Getter
     @Setter
-    public class AutoProxyCreator {
+    public static class AutoProxyCreator {
         /**
          * 是否开启
          */

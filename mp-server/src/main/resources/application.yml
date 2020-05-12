@@ -148,6 +148,9 @@ mp:
               hashAlgorithmName: MD5
               hashIterations: 2
               storedCredentialsHexEncoded: true
+    web:
+      filters:
+        authc: com.maple.starter.shiro.filter.CustomUserFilter
 knife4j:
   basic:
     enable: true
