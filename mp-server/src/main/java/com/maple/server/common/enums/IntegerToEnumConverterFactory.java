@@ -1,5 +1,6 @@
 package com.maple.server.common.enums;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 
@@ -15,21 +16,23 @@ import java.util.Map;
  * @since 2020-02-28 16:28
  */
 public class IntegerToEnumConverterFactory implements ConverterFactory<Integer, BaseEnum> {
-    private static final Map<Class, Converter> CONVERTER_MAP =  new HashMap<>();
+    private static final Map<Class<?>, Converter<Integer,? extends BaseEnum>> CONVERTER_MAP =  new HashMap<>();
 
+    @NotNull
     @Override
-    public <T extends BaseEnum> Converter<Integer, T> getConverter(Class<T> targetType) {
-        Converter<Integer, T> converter = CONVERTER_MAP.get(targetType);
+    @SuppressWarnings("unchecked cast")
+    public <T extends BaseEnum> Converter<Integer, T> getConverter(@NotNull Class<T> targetType) {
+        Converter<Integer, T> converter = (Converter<Integer, T>) CONVERTER_MAP.get(targetType);
         if(converter == null) {
-            converter = new IntegerToEnumConverter<T>(targetType);
+            converter = new IntegerToEnumConverter<>(targetType);
             CONVERTER_MAP.put(targetType, converter);
         }
         return converter;
     }
 
-    class IntegerToEnumConverter<T extends BaseEnum> implements Converter<Integer, T> {
+    static class IntegerToEnumConverter<T extends BaseEnum> implements Converter<Integer, T> {
 
-        private Map<Integer, T> enumMap = new HashMap<>();
+        private final Map<Integer, T> enumMap = new HashMap<>();
 
         IntegerToEnumConverter(Class<T> enumType) {
             T[] enums = enumType.getEnumConstants();
@@ -39,7 +42,7 @@ public class IntegerToEnumConverterFactory implements ConverterFactory<Integer, 
         }
 
         @Override
-        public T convert(Integer source) {
+        public T convert(@NotNull Integer source) {
 
             T t = enumMap.get(source);
             if (t == null) {

@@ -3,6 +3,7 @@ package com.maple.server.service;
 import com.maple.server.BaseTest;
 import com.maple.server.dto.admin.UserDTO;
 import com.maple.server.service.admin.UserService;
+import com.maple.server.tool.column.utils.ColumnContextHolder;
 import com.maple.server.utils.DigestUtils;
 import org.junit.Test;
 
@@ -21,6 +22,7 @@ public class UserServiceTest extends BaseTest {
 
     @Test
     public void get() {
+        ColumnContextHolder.setColumnValue("1");
         System.out.println(userService.getByAccount("maple"));
     }
 

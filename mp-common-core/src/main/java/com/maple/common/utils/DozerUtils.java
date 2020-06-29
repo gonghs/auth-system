@@ -25,7 +25,7 @@ public class DozerUtils {
     /**
      * 普通转换器
      */
-    private static Mapper mapper;
+    private final Mapper mapper;
 
 
     static {

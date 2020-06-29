@@ -35,9 +35,11 @@
         <shiro-starter.version>1.5.2</shiro-starter.version>
         <hutool.version>5.0.3</hutool.version>
         <inject.version>1</inject.version>
+        <jsqlparser.version>3.1</jsqlparser.version>
         <xxl-job.version>2.1.0</xxl-job.version>
         <thymeleaf-shiro.version>2.0.0</thymeleaf-shiro.version>
         <swagger-bootstrap-ui.version>1.9.4</swagger-bootstrap-ui.version>
+        <sun-tools.version>1.8</sun-tools.version>
     </properties>
 
     <dependencyManagement>
@@ -145,6 +147,16 @@
                 <groupId>com.xuxueli</groupId>
                 <artifactId>xxl-job-core</artifactId>
                 <version>${xxl-job.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.jsqlparser</groupId>
+                <artifactId>jsqlparser</artifactId>
+                <version>${jsqlparser.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun</groupId>
+                <artifactId>tools</artifactId>
+                <version>${sun-tools.version}</version>
             </dependency>
         </dependencies>
 

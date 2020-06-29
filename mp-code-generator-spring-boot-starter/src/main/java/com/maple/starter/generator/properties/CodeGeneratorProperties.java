@@ -24,15 +24,17 @@ public class CodeGeneratorProperties {
     private GlobalConfig globalConfig = new GlobalConfig();
     private StrategyConfig strategyConfig = new StrategyConfig();
     private PackageConfig packageConfig = new PackageConfig();
+    private TemplateConfig templateConfig = new TemplateConfig();
+    private EnumConfig enumConfig = new EnumConfig();
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    public class GlobalConfig extends com.baomidou.mybatisplus.generator.config.GlobalConfig {
+    public static class GlobalConfig extends com.baomidou.mybatisplus.generator.config.GlobalConfig {
         private String author = "maple";
         private String outputDir = System.getProperty("user.dir") + "/gen/";
-        private Boolean swagger2 = true;
-        private Boolean fileOverride = false;
+        private boolean swagger2 = true;
+        private boolean fileOverride = false;
         private String entityName = "%sDTO";
         private String mapperName = "%sMapper";
         private String xmlName = "%sMapper";
@@ -45,9 +47,10 @@ public class CodeGeneratorProperties {
     @Setter
     @Accessors(chain = true)
     public class StrategyConfig extends com.baomidou.mybatisplus.generator.config.StrategyConfig {
-        private Boolean entityLombokModel = true;
+        private boolean entityLombokModel = true;
         private String[] superEntityColumns = {"id", "desc", "modify_time", "create_time", "data_status"};
-        private NamingStrategy namingStrategy = NamingStrategy.underline_to_camel;
+        private NamingStrategy naming = NamingStrategy.underline_to_camel;
+        private NamingStrategy columnNaming = NamingStrategy.underline_to_camel;
         private String superEntityClass = "com.maple.dto.base.BaseDTO";
         private String superMapperClass = "com.baomidou.mybatisplus.core.mapper.BaseMapper";
         private String superServiceClass = "com.baomidou.mybatisplus.extension.service.IService";
@@ -65,10 +68,18 @@ public class CodeGeneratorProperties {
     @Setter
     @Accessors(chain = true)
     public class PackageConfig extends com.baomidou.mybatisplus.generator.config.PackageConfig {
+        /**
+         * dir和 package的区别在于 dir不会在生成时声明在文件头部包名处
+         */
+        private String entityDir = "";
+        private String mapperDir = "";
+        private String serviceDir = "";
+        private String serviceImplDir = "";
+        private String controllerDir = "";
         private String entity = "dto";
         private String mapper = "dao";
         private String service = "service";
-        private String controller = "dto";
+        private String controller = "controller";
 
         @Override
         public String getEntity() {
@@ -99,6 +110,30 @@ public class CodeGeneratorProperties {
         public String getParent() {
             return basePackage;
         }
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    public static class TemplateConfig extends com.baomidou.mybatisplus.generator.config.TemplateConfig {
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    public static class EnumConfig {
+        /**
+         * 枚举名称 允许定义一个%s或两个%s 两个时前一个是类名(大写驼峰)后一个是字段名(大写驼峰) 一个时只填入字段名
+         */
+        private String enumName = "%sEnum";
+        /**
+         * 枚举父类
+         */
+        private String superEnumClass = "";
+        /**
+         * 枚举模板路径
+         */
+        private String templatePath = "/templates/fieldEnum.java";
     }
 
     /**

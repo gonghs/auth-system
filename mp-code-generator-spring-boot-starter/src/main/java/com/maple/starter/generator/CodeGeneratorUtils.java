@@ -1,7 +1,8 @@
 package com.maple.starter.generator;
 
-import com.baomidou.mybatisplus.generator.AutoGenerator;
-import com.baomidou.mybatisplus.generator.config.*;
+import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
+import com.baomidou.mybatisplus.generator.config.GlobalConfig;
+import com.baomidou.mybatisplus.generator.config.TemplateConfig;
 import com.baomidou.mybatisplus.generator.config.converts.MySqlTypeConvert;
 import com.baomidou.mybatisplus.generator.config.rules.IColumnType;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
@@ -29,8 +30,6 @@ public class CodeGeneratorUtils {
      */
     public void generator() {
         AutoGenerator generator = new AutoGenerator();
-        // 全局配置
-        GlobalConfig gc = codeGeneratorProperties.getGlobalConfig();
         DataSourceConfig dsc = new DataSourceConfig()
                 .setTypeConvert(new MySqlTypeConvert() {
                     // 自定义数据库表字段类型转换【可选】
@@ -45,20 +44,11 @@ public class CodeGeneratorUtils {
                 .setUsername(dbProperties.getUsername())
                 .setPassword(dbProperties.getPassword());
 
-
-        // 策略配置
-        StrategyConfig strategy =
-                codeGeneratorProperties.getStrategyConfig().setInclude(codeGeneratorProperties.getGenTables());
-        // 包配置
-        PackageConfig packageConfig = codeGeneratorProperties.getPackageConfig();
-
+        generator.setCodeGeneratorProperties(codeGeneratorProperties);
         // 模板配置 不生成xml
         TemplateConfig templateConfig = new TemplateConfig().setXml(null);
-
         // 启用设置 并执行生成
-        generator.setGlobalConfig(gc).setDataSource(dsc).setStrategy(strategy).setPackageInfo(packageConfig)
-                .setTemplateEngine(new FreemarkerTemplateEngine()).setTemplate(templateConfig);
-
+        generator.setDataSource(dsc).setTemplateEngine(new FreemarkerTemplateEngine()).setTemplate(templateConfig);
         generator.execute();
     }
 }

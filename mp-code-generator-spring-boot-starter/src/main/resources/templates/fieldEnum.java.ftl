@@ -1,26 +1,24 @@
 package com.maple.server.common.enums;
 
+
 import com.alibaba.fastjson.annotation.JSONType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
-/**
- * 数据状态枚举
- *
- * @author maple
- * @version 1.0
- * @since 2019-09-15 16:19
- */
-@Getter
-@AllArgsConstructor
+
 @JSONType(deserializer = EnumDeserializer.class)
-public enum DataStatusEnum implements BaseEnum {
+public enum ${field.capitalName}Enum {
     /**
-     * 数据状态
+     * 枚举列表
      */
-    NORMAL(1, "正常"), DELETE(0, "删除"),
-    ;
+    <#list enumList as enum>
+    <#if enum_has_next>
+    ${enum.name}("${enum.value}","${enum.desc}"),
+    <#else>
+    ${enum.name}("${enum.value}","${enum.desc}");
+    </#if>
+    </#list>
+    ${field.capitalName}(Integer value, String desc){
 
+    }
     /**
      * 值
      */

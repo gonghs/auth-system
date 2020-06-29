@@ -37,7 +37,7 @@ public class DbProperties {
 
     @Getter
     @Setter
-    public class DruidProperties {
+    public static class DruidProperties {
         /**
          * 连接url
          */
