@@ -12,8 +12,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * JWTFilter
+ * Jwt过滤器 在shiro中注册名为jwt
  *
+ * {@link com.maple.starter.shiro.ShiroWebFilterAutoConfiguration}
  * @author maple
  * @version 1.0
  * @since 2020-06-30 14:20

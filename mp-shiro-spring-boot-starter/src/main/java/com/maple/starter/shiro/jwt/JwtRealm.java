@@ -12,6 +12,8 @@ import org.apache.shiro.subject.PrincipalCollection;
 
 /**
  * UserRealm
+ * 登录由{@link com.maple.starter.shiro.filter.JwtFilter}根据头部token获取Token对象发起,
+ * 然后在此realm进行实际登录行为
  *
  * @author maple
  * @version 1.0

@@ -3,7 +3,6 @@ package com.maple.starter.shiro.jwt;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
-import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -11,7 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * shiro jwt权限功能接口
+ * shiro jwt权限功能接口 默认实现为{@link DefaultShiroJwtAuthorization}
+ * 通常需要自定义
  *
  * @author maple
  * @version 1.0
@@ -27,7 +27,7 @@ public interface ShiroJwtAuthorization {
     String getSecret(String userId);
 
     /**
-     * 获取权限对象
+     * 获取权限对象,定义权限
      *
      * @param userId user id
      * @return authorizationInfo
@@ -62,11 +62,4 @@ public interface ShiroJwtAuthorization {
      */
     void authorizationExceptionHandel(HttpServletRequest request, HttpServletResponse response,
                                       AuthorizationException authorizationException);
-
-    /**
-     * shiro过滤器工厂设置
-     *
-     * @param factoryBean ShiroFilterFactoryBean
-     */
-    void shiroFilterFactoryBean(ShiroFilterFactoryBean factoryBean);
 }

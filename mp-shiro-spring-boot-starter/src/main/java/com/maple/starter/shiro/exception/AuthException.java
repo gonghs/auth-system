@@ -3,7 +3,7 @@ package com.maple.starter.shiro.exception;
 import org.apache.shiro.authc.AuthenticationException;
 
 /**
- * 权限异常的异常
+ * 权限异常
  *
  * @author maple
  * @version 1.0

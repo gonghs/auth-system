@@ -9,7 +9,6 @@ import lombok.SneakyThrows;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
-import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.util.WebUtils;
 
 import javax.servlet.ServletRequest;
@@ -62,10 +61,5 @@ public class DefaultShiroJwtAuthorization implements ShiroJwtAuthorization {
         response.setCharacterEncoding(GlobalConst.DEFAULT_CHARSET_STR);
         response.setContentType(ContentType.JSON.name());
         out.println(Results.failure(ErrorCode.AUTH_ERROR.code(), "token校验异常"));
-    }
-
-    @Override
-    public void shiroFilterFactoryBean(ShiroFilterFactoryBean factoryBean) {
-
     }
 }

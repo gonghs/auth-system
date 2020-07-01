@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.apache.shiro.authc.AuthenticationToken;
 
 /**
- * JWTToken
+ * Jwt登录token对象
  *
  * @author maple
  * @version 1.0

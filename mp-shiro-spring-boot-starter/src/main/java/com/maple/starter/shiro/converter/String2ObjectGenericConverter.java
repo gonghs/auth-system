@@ -14,7 +14,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * 配置转换器, 用于将String类型的配置值读取为类对象
+ *
  * @author maple
+ * {@link com.maple.starter.shiro.GenericConverterAutoConfiguration}
  */
 @Slf4j
 public class String2ObjectGenericConverter implements GenericConverter {
