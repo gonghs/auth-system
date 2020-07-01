@@ -8,24 +8,21 @@ mp-server(主服务)
 .
 ├── common (一些通用的内容 不会涉及实现)
 │   ├── anno 所有的自定义注解类
-│   ├── buider 全局对象的构造器类
-│   ├── constant 全局的常量类
-│   ├── context 一些上下文对象 
 │   ├── entity 全局的实体类
-│   ├── enums 全局的基础枚举
-│   └── exeception 和异常相关的一些基础类
+│   └── enums 全局的基础枚举
 ├── controller(控制器)
 ├── dao(数据访问层)
 ├── dto(数据对象)
 ├── function(包含一些系统职能相关的内容 包括定时任务,策略服务,过滤器,拦截器等)
 │   ├── aspect 放置所有的aop切面
+│   ├── auth 权限相关的类
 │   ├── basic 放置一些提供实现的基本类
 │   ├── config 包含spring的一些bean配置
-│   ├── filter(过滤器)
-│   ├── handler(处理器)
-│   ├── interceptor(拦截器)
-│   ├── job(定时任务)
-│   └── strategy(策略相关)
+│   ├── filter 过滤器
+│   ├── handler 处理器
+│   ├── interceptor 拦截器
+│   ├── job 定时任务
+│   └── strategy 策略相关
 │       ├── enums 策略枚举
 │       ├── factory 策略工厂
 │       └── service 策略服务
@@ -41,7 +38,6 @@ mp-shiro-spring-boot-starter(shiro starter)
 ## starter配置介绍
 
 ### mp-code-generator-spring-boot-starter
-计划加入: 多文件夹生成,根据备注生成枚举
 配置前缀为mp.tool.generator,数据库配置默认由spring.datasource或spring.datasource.druid下读取
 为了方便配置读取需要借助spring注入运行
 ```java
@@ -77,8 +73,10 @@ mp:
       model-name: admin
 ```
 
+计划变更: 多文件夹生成,根据备注生成枚举
+  
 ### mp-shiro-spring-boot-starter
-计划从官方starter依赖中独立出来
+基于官方starter再封装  
 配置前缀为mp.shiro,支持所有官方starter配置,例如:
 ```yaml
 shiro:
@@ -140,6 +138,7 @@ mp:
       header-key: Authorization
 ```
 
+计划变更: 从官方starter依赖中独立出来
 
 ## 数据库介绍
 初始化sql详见init.sql项目引入了liquibase配置数据库启动项目将会自动执行
