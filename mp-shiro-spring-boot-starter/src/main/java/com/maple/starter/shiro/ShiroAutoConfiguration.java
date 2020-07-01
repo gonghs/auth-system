@@ -12,17 +12,13 @@ import org.apache.shiro.spring.config.web.autoconfigure.ShiroWebFilterConfigurat
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
 import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.GenericApplicationContext;
 
-import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 自动配置类
@@ -35,11 +31,9 @@ import java.util.concurrent.atomic.AtomicLong;
 @Configuration
 @AllArgsConstructor
 @AutoConfigureBefore({org.apache.shiro.spring.boot.autoconfigure.ShiroAutoConfiguration.class,
-        ShiroAnnotationProcessorAutoConfiguration.class, ShiroWebFilterConfiguration.class})
-public class ShiroAutoConfiguration implements InitializingBean {
+        ShiroAnnotationProcessorAutoConfiguration.class,ShiroWebFilterConfiguration.class})
+public class ShiroAutoConfiguration {
     private final ShiroProperties shiroProperties;
-    private final AtomicLong counter = new AtomicLong(0);
-    private final GenericApplicationContext genericApplicationContext;
 
     @Bean
     @ConditionalOnMissingBean
@@ -91,17 +85,4 @@ public class ShiroAutoConfiguration implements InitializingBean {
         return null;
     }
 
-    @Override
-    public void afterPropertiesSet() {
-        // init realms
-        shiroProperties.realms().forEach(item -> {
-            String name =
-                    Optional.ofNullable(item.getName()).orElse(item.getClass().getName() + Objects.toString(counter.incrementAndGet()));
-            genericApplicationContext.registerBean(name, Realm.class, () -> item);
-        });
-        // 猜测与org.apache.shiro.spring.config.web.autoconfigure FilterRegistrationBean自动配置有关
-        // 使用此方式自动注册之后会使过滤链顺序失效 凡带有 /**:[filter] 的无视所有规则拦截所有
-        //        shiroProperties.getFilters().forEach((key,val) -> genericApplicationContext.registerBean(key,
-        //        Filter.class, () -> val));
-    }
 }

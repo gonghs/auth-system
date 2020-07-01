@@ -11,10 +11,12 @@ import org.apache.shiro.realm.Realm;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.GenericApplicationContext;
 
 import javax.servlet.Filter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 /**
@@ -29,6 +31,8 @@ import java.util.stream.Collectors;
 @Configuration
 @ConfigurationProperties("mp.shiro")
 public class ShiroProperties implements InitializingBean {
+    private final GenericApplicationContext genericApplicationContext;
+    private final AtomicLong counter = new AtomicLong(0);
     /**
      * 过滤链
      */
@@ -54,6 +58,10 @@ public class ShiroProperties implements InitializingBean {
             setRealmProperty(realmDefinition);
             setCredentialsMatcherProperty(realmDefinition);
             setReamCredentialsMatcher(realmDefinition);
+            // 注册bean
+            String name =
+                    Optional.ofNullable(realmDefinition.getRealm().getTarget().getName()).orElse(realmDefinition.getRealm().getTarget().getClass().getName() + Objects.toString(counter.incrementAndGet()));
+            genericApplicationContext.registerBean(name, Realm.class, () -> realmDefinition.getRealm().getTarget());
         }
     }
 

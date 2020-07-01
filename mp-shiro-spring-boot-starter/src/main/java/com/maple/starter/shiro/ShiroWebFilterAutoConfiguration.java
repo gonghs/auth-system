@@ -1,11 +1,15 @@
 package com.maple.starter.shiro;
 
+import com.maple.starter.shiro.filter.JwtFilter;
+import com.maple.starter.shiro.properties.ShiroJwtProperties;
 import com.maple.starter.shiro.properties.ShiroWebProperties;
+import com.maple.starter.shiro.utils.JwtUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.spring.config.web.autoconfigure.ShiroWebFilterConfiguration;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.spring.web.config.AbstractShiroWebFilterConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -31,6 +35,9 @@ import java.util.Map;
 @ConditionalOnProperty(value = "mp.shiro.web.enabled", havingValue = "true", matchIfMissing = true)
 public class ShiroWebFilterAutoConfiguration extends AbstractShiroWebFilterConfiguration {
     private final ShiroWebProperties shiroWebProperties;
+    private final ShiroJwtProperties shiroJwtProperties;
+    @Autowired(required = false)
+    private JwtUtils jwtUtils;
 
     @Bean
     @ConditionalOnMissingBean
@@ -39,6 +46,9 @@ public class ShiroWebFilterAutoConfiguration extends AbstractShiroWebFilterConfi
         ShiroFilterFactoryBean shiroFilterFactoryBean = super.shiroFilterFactoryBean();
         Map<String, Filter> filters = shiroFilterFactoryBean.getFilters();
         filters.putAll(shiroWebProperties.getFilters());
+        if (shiroJwtProperties.getEnable()) {
+            filters.put("jwt", new JwtFilter(jwtUtils));
+        }
         return shiroFilterFactoryBean;
     }
 }

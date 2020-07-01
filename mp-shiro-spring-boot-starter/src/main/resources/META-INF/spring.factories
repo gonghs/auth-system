@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.maple.starter.shiro.ShiroAutoConfiguration\
-  ,com.maple.starter.shiro.ShiroRedisAutoConfiguration,com.maple.starter.shiro.GenericConverterAutoConfiguration,com.maple.starter.shiro.ShiroWebFilterAutoConfiguration
+  ,com.maple.starter.shiro.ShiroRedisAutoConfiguration,com.maple.starter.shiro.GenericConverterAutoConfiguration\
+  ,com.maple.starter.shiro.ShiroWebFilterAutoConfiguration,com.maple.starter.shiro.ShiroJwtAutoConfiguration
