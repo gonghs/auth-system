@@ -21,7 +21,7 @@ public class ShiroJwtProperties {
     /**
      * 过期时间
      */
-    private Long expireTime = 7200000L;
+    private Long expire = 200000L;
     /**
      * token 前缀
      */

@@ -90,7 +90,7 @@ public class JwtUtils {
      * @return token
      */
     public String sign(String userId) {
-        Date date = new Date(System.currentTimeMillis() + shiroJwtProperties.getExpireTime());
+        Date date = new Date(System.currentTimeMillis() + shiroJwtProperties.getExpire());
         String secret = shiroJwtAuthorization.getSecret(userId) == null ? shiroJwtProperties.getSecret() : null;
         assert secret != null;
         Algorithm algorithm = Algorithm.HMAC256(secret);

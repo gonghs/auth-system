@@ -38,6 +38,109 @@ mp-code-generator-spring-boot-starter(代码生成器starter)
 mp-shiro-spring-boot-starter(shiro starter)
 ```
 
+## starter配置介绍
+
+### mp-code-generator-spring-boot-starter
+计划加入: 多文件夹生成,根据备注生成枚举
+配置前缀为mp.tool.generator,数据库配置默认由spring.datasource或spring.datasource.druid下读取
+为了方便配置读取需要借助spring注入运行
+```java
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class BaseTest {
+     @Autowired
+     private CodeGeneratorUtils codeGeneratorUtils; 
+     @Test
+     public void generator() {
+        codeGeneratorUtils.generator();
+     }
+}
+```
+支持所有的原生配置,例如:
+```yaml
+mp:
+  tool:
+    generator:
+      global:
+        fileOverride: true
+```
+将部分配置移动至顶层并新增部分配置
+```yaml
+mp:
+  tool:
+    generator:
+      # 相当于globalConfig.include
+      gen-tables: xxx,xxx
+      # 相当于packageConfig.parent
+      base-package: com.maple
+      # 模块名 模块名将统一插入实际生成的文件之前 例如entity的文件路径将是 basePackage + entity + modelName + '文件名'
+      model-name: admin
+```
+
+### mp-shiro-spring-boot-starter
+计划从官方starter依赖中独立出来
+配置前缀为mp.shiro,支持所有官方starter配置,例如:
+```yaml
+shiro:
+  loginUrl: /login
+  successUrl: /
+  sessionManager:
+    cookie:
+      name: MPJSESSIONID
+      maxAge: 200000
+  unauthorizedUrl: /error/403
+```
+额外增加的配置:
+```yaml
+mp:
+  shiro:
+    # 过滤链 由最后一个:分隔anon user等权限动作
+    filter-chain:
+      - /login:anon
+      - /logout:logout
+      - /**:jwt,authc
+    # 由全限定包名自动加载realms并设置加密方式 也支持直接用bean形式定义 自选即可
+    realms:
+      - realm:
+        target: com.maple.server.function.auth.MyRealm
+        credentials-matcher:
+          target: org.apache.shiro.authc.credential.HashedCredentialsMatcher
+          property:
+            hashAlgorithmName: MD5
+            hashIterations: 2
+            storedCredentialsHexEncoded: true
+    # 自动代理创建配置 由于官方默认配置会使权限注解与aop冲突 因此增加此配置自定义
+    advisor-auto-proxy-creator:
+      use-prefix: true
+      proxy-target-class: false
+    cache:
+      redis:
+        # 是否开启redis进行session管理 redis配置自动由spring.redis下读取
+        enable: true
+        # 标识不同用户所用的字段
+        principalIdFieldName: id
+        # 过期时间
+        expire: 20000
+    web:
+      # 以map形式读取并覆盖默认shiro filter
+      filters:
+        authc: com.maple.starter.shiro.filter.CustomUserFilter
+    jwt:
+      # 是否开启jwt 开启则自动注册jwtRealm jwtFilter(name为jwt)
+      enable: true
+      # token生成秘钥
+      secret: xxxxxx
+      # 过期时间
+      expire: 200000
+      # token请求时的前缀
+      prefix: Bearer 
+      # token签名时返回的前缀 通常和prefix是一个值
+      sign-prefix: Bearer 
+      # 请求头携带token的key
+      header-key: Authorization
+```
+
+
 ## 数据库介绍
 初始化sql详见init.sql项目引入了liquibase配置数据库启动项目将会自动执行
 如果需要关闭自动执行请修改配置spring.liquibase.enabled属性为false
