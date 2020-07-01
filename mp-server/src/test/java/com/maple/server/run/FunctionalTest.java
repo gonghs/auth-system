@@ -1,7 +1,7 @@
 package com.maple.server.run;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
-import com.maple.server.common.exception.ServiceException;
+import com.maple.common.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 

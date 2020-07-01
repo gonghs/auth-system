@@ -114,6 +114,8 @@ mp:
     filter-chain:
       # 放行登录页面
       - /login:anon
+      # 放行token获取
+      - /token:anon
       # 配置退出过滤器,具体的退出代码Shiro已经实现
       - /logout:logout
       # 放行登陆验证
@@ -138,10 +140,10 @@ mp:
       - /images/*/**:anon
       - /user/login:anon
       # 其他所有url都必须认证通过才可以访问
-      - /**:authc
+      - /**:jwt,authc
     realms:
       - realm:
-          target: com.maple.server.common.entity.MyRealm
+          target: com.maple.server.function.auth.MyRealm
           credentials-matcher:
             target: org.apache.shiro.authc.credential.HashedCredentialsMatcher
             property:
@@ -151,6 +153,9 @@ mp:
     web:
       filters:
         authc: com.maple.starter.shiro.filter.CustomUserFilter
+    jwt:
+      enable: true
+      secret: DEB2FB335003A340D5B2BEB970184456
 knife4j:
   basic:
     enable: true
@@ -164,3 +169,4 @@ shiro:
       name: MPJSESSIONID
       maxAge: 200000
   unauthorizedUrl: /error/403
+debug: true

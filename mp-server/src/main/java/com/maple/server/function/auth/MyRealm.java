@@ -1,4 +1,4 @@
-package com.maple.server.common.entity;
+package com.maple.server.function.auth;
 
 import com.maple.server.dto.admin.UserDTO;
 import com.maple.server.service.admin.MenuService;

@@ -2,8 +2,8 @@ package com.maple.server.controller.admin;
 
 
 import com.maple.server.common.anno.CurrentUser;
-import com.maple.server.common.builder.Results;
-import com.maple.server.common.entity.Result;
+import com.maple.common.builder.Results;
+import com.maple.common.entity.Result;
 import com.maple.server.controller.BaseController;
 import com.maple.server.dto.admin.MenuDTO;
 import com.maple.server.dto.admin.UserDTO;

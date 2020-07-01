@@ -1,8 +1,8 @@
 package com.maple.server.run;
 
-import com.maple.server.common.builder.Results;
-import com.maple.server.common.entity.Result;
-import com.maple.server.common.exception.ServiceException;
+import com.maple.common.builder.Results;
+import com.maple.common.entity.Result;
+import com.maple.common.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;

@@ -3,7 +3,7 @@ package com.maple.server.run;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
-import com.maple.server.common.entity.MyRealm;
+import com.maple.server.function.auth.MyRealm;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
