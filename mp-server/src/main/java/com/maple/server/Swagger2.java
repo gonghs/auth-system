@@ -8,18 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Parameter;
+import springfox.documentation.service.ApiKey;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 
 /**
  * swagger bean
@@ -36,11 +33,6 @@ public class Swagger2 {
 
     @Bean
     public Docket createRestApi() {
-        //增加全局参数
-        List<Parameter> pars = new ArrayList<>();
-
-        ParameterBuilder tokenPar = new ParameterBuilder();
-        pars.add(tokenPar.parameterType("header").modelRef(new ModelRef("String")).description("token").name(shiroJwtProperties.getHeaderKey()).build());
         //设置文档类型
         return new Docket(DocumentationType.SWAGGER_2)
                 //api的相关描述信息，通常显示在页面的最上方
@@ -51,7 +43,8 @@ public class Swagger2 {
                 .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
                 //设置扫描哪些controller，这里设置扫描全部，可以传入正则表达式
                 .paths(PathSelectors.any())
-                .build().globalOperationParameters(pars);
+                .build().securitySchemes(Collections.singletonList(new ApiKey("token"
+                        ,shiroJwtProperties.getHeaderKey(),"header")));
     }
 
     private ApiInfo apiInfo() {
