@@ -15,6 +15,7 @@ spring:
       max-active: 20
       test-on-borrow: true
       driver-class-name: com.mysql.cj.jdbc.Driver
+      filters: stat
   resources:
     chain:
       strategy:

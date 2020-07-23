@@ -147,9 +147,10 @@
         // 允许两种传输方式
         // 1 (逗号分隔 例如:nameCn,sex) 如此例 则查询的枚举表dicType为 NAME_CN和SEX 返回时key分别为nameCn sex 设置到$(`[name="${nameCn}"]`) 上
         // 2 (数组形式 例如:[{key:'nameCn',dicKey:'nameEn']}) 如此例 则查询的枚举表dicType为NAME_CN 返回时key为nameCn 设置到$(`[name="${nameCn}"]`) 上
-        fillSelectByDicData: function (option, preStr) {
+        fillSelectByDicData: function (option, preStr, url) {
             if (!option) return;
             preStr = preStr || '';
+            url = url || "/dicData/getEnum";
             //映射dicKey和实际的key
             let mapObj;
             let paramStr = '';
@@ -159,12 +160,15 @@
                     mapObj[val.dicKey] = val.key;
                     paramStr += val.dicKey + ","
                 });
-                paramStr = paramStr.substring(0, paramStr.length - 1);
+                paramStr = paramStr ? paramStr.substring(0, paramStr.length - 1) : '';
             } else {
                 paramStr = option;
             }
+            if (!paramStr) {
+                return;
+            }
             let _self = this;
-            $.post("/comm/dicData/queryDicData", {
+            $.post(url, {
                 preStr: preStr,
                 searchKeys: paramStr
             }).then(function (resp) {
@@ -290,7 +294,7 @@
                         pTrCounter = pTitle.colspan - 1;
                         pTr.append("<th colspan='" + pTitle.colspan + "'>" + pTitle.title + "</th>")
                         tr.append("<th>" + item.title + "</th>")
-                        pTrCounter --;
+                        pTrCounter--;
                     } else {
                         pTr.append("<th colspan='1' rowspan='2'>" + item.title + "</th>");
                     }
@@ -318,6 +322,8 @@
                 jQuery(this).trigger("beforeSearchAreaCreate", [this.searchOptions]);
                 //拼接之后进行渲染
                 this.buildSearch(this.searchOptions);
+                //初始化环境(根据配置填充select )
+                this._initSearchAreaEnv();
             }
         },
         //抽取和填充字段配置  这里加入一个searchable配置,和wrap配置(dataTable不需要的配置)
@@ -393,22 +399,39 @@
             }
 
         },
+        _initSearchAreaEnv: function () {
+            let enumOption = [];
+            // 搜集需要额外根据枚举或字典填充的配置 {type:"enum",dicKey:"xxx"}
+            this.searchOptions.forEach(function (item) {
+                if (item.type === 'select' && ComUtils.isObject(item.option) && item.option.type === 'enum') {
+                    enumOption.push({
+                        key: item.key,
+                        dicKey: item.option.dicKey || item.key
+                    });
+                }
+            });
+            this.fillSelectByDicData(enumOption);
+        },
         // 处理文本
         _processText: function (item) {
             let _self = this;
             if (!item.defaultContent) {
                 item.defaultContent = "";
             }
-            //自动填充换行逻辑
-            if (item.wrap) {
+            //  文本处理使用render实现 若存在自定义render则跳过
+            if (item.render) {
+                return;
+            }
+            // 实现配置换行,列切割逻辑
+            if (item.wrap && !item.render) {
                 if (ComUtils.isNumber(item.wrap)) {
                     item.render = function (data, type, row) {
                         return _self._textConversionWrapDiv(data, item.wrap);
-                    }
+                    };
                 } else if (ComUtils.isBoolean(item.wrap)) {
                     item.render = function (data, type, row) {
                         return _self._textConversionWrapDiv(data);
-                    }
+                    };
                 }
                 delete item.wrap;
             }

@@ -3,12 +3,16 @@ package com.maple.server.run;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
+import com.maple.server.dto.base.BaseDTO;
 import com.maple.server.function.auth.MyRealm;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * huTools/apacheUtils 测试
@@ -52,5 +56,14 @@ public class UtilsTest {
     public void testEqualAny() {
         String[] arr = {"pdf", "doc", "docx"};
         log.info("{}",StringUtils.equalsAny("docx", arr));
+    }
+
+    @Test
+    public void testBeanPath() {
+        BaseDTO baseDTO = new BaseDTO();
+        baseDTO.setDesc("nihao");
+        List<BaseDTO> baseDTOS = Arrays.asList(baseDTO);
+        BeanUtil.getProperty(baseDTOS, "me[0].desc");
+        log.info("end");
     }
 }
