@@ -1,13 +1,13 @@
 package com.maple.server.controller.admin;
 
 
-import com.maple.server.common.builder.Results;
-import com.maple.server.common.constant.SecurityConst;
-import com.maple.server.common.entity.Result;
-import com.maple.server.common.exception.AuthException;
+import com.maple.common.builder.Results;
+import com.maple.common.entity.Result;
 import com.maple.server.controller.BaseController;
 import com.maple.server.dto.admin.UserDTO;
 import com.maple.server.service.admin.UserService;
+import com.maple.starter.shiro.constant.SecurityConst;
+import com.maple.starter.shiro.exception.AuthException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;

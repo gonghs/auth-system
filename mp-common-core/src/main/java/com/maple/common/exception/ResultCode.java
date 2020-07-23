@@ -1,4 +1,4 @@
-package com.maple.server.common.exception;
+package com.maple.common.exception;
 
 /**
  * 结果码接口

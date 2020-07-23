@@ -1,10 +1,10 @@
 package com.maple.server.function.handler;
 
-import com.maple.server.common.builder.Results;
-import com.maple.server.common.entity.Result;
-import com.maple.server.common.exception.AuthException;
-import com.maple.server.common.exception.ErrorCode;
-import com.maple.server.common.exception.ServiceException;
+import com.maple.common.builder.Results;
+import com.maple.common.entity.Result;
+import com.maple.common.exception.ErrorCode;
+import com.maple.common.exception.ServiceException;
+import com.maple.starter.shiro.exception.AuthException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;

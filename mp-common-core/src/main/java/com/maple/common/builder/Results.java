@@ -1,10 +1,10 @@
-package com.maple.server.common.builder;
+package com.maple.common.builder;
 
-import com.maple.server.common.constant.GlobalConst;
 import com.maple.common.context.RequestContext;
-import com.maple.server.common.entity.Result;
-import com.maple.server.common.exception.ErrorCode;
-import com.maple.server.common.exception.ServiceException;
+import com.maple.common.entity.Result;
+import com.maple.common.exception.ErrorCode;
+import com.maple.common.exception.ServiceException;
+import com.maple.server.common.constant.GlobalConst;
 
 /**
  * Result工具类，用于返回Result对象

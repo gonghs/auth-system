@@ -6,6 +6,9 @@ import com.maple.server.function.interceptor.CurrentUserMethodArgumentResolver;
 import com.maple.server.function.interceptor.JsonArgMethodArgumentResolver;
 import com.maple.server.function.interceptor.LogInterceptor;
 import com.maple.server.function.interceptor.PathInterceptor;
+import com.maple.server.service.admin.UserService;
+import com.maple.starter.shiro.utils.JwtUtils;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -22,8 +25,10 @@ import java.util.List;
  * @since 2019-09-20 16:23
  */
 @Configuration
+@AllArgsConstructor
 public class InterceptorConfig implements WebMvcConfigurer {
-
+    private final JwtUtils jwtUtils;
+    private final UserService userService;
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(currentUserMethodArgumentResolver());
@@ -43,7 +48,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
     }
 
     private CurrentUserMethodArgumentResolver currentUserMethodArgumentResolver() {
-        return new CurrentUserMethodArgumentResolver();
+        return new CurrentUserMethodArgumentResolver(jwtUtils, userService);
     }
     private JsonArgMethodArgumentResolver jsonArgMethodArgumentResolver() {
         return new JsonArgMethodArgumentResolver();

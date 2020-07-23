@@ -2,6 +2,9 @@ package com.maple.server.function.interceptor;
 
 import com.maple.server.common.anno.CurrentUser;
 import com.maple.server.dto.admin.UserDTO;
+import com.maple.server.service.admin.UserService;
+import com.maple.starter.shiro.utils.JwtUtils;
+import lombok.AllArgsConstructor;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -17,7 +20,10 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  * @version 1.0
  * @since 2019-07-16 15:20
  */
+@AllArgsConstructor
 public class CurrentUserMethodArgumentResolver implements HandlerMethodArgumentResolver {
+    private final JwtUtils jwtUtils;
+    private final UserService userService;
 
     @Override
     public boolean supportsParameter(MethodParameter methodParameter) {
@@ -27,7 +33,11 @@ public class CurrentUserMethodArgumentResolver implements HandlerMethodArgumentR
     @Override
     public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer,
                                   NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory) throws Exception {
-        return SecurityUtils.getSubject().getPrincipal();
-
+        Object principal = SecurityUtils.getSubject().getPrincipal();
+        if (principal instanceof UserDTO) {
+            return principal;
+        }
+        String userId = jwtUtils.getUserId();
+        return userService.getById(userId);
     }
 }

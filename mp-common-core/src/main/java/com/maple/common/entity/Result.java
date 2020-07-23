@@ -1,4 +1,4 @@
-package com.maple.server.common.entity;
+package com.maple.common.entity;
 
 import com.maple.server.common.constant.GlobalConst;
 import io.swagger.annotations.ApiResponse;

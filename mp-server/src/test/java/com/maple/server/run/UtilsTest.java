@@ -17,6 +17,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * huTools/apacheUtils 测试
  *
