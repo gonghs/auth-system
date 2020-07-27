@@ -39,28 +39,33 @@ mp-shiro-spring-boot-starter(shiro starter)
 
 ### mp-code-generator-spring-boot-starter
 示例表创建语句:
-```html
-create table manager.test
+```mysql
+create table test
 (
-	id int not null
-		primary key,
-	username varchar(30) null comment '用户名',
-	password varchar(30) null comment '密码',
-	status int null comment '状态 1:有效,0:无效;'
+    id          int         not null
+        primary key,
+    username    varchar(30) null comment '用户名',
+    audit_status      int         null comment '状态 1:审核通过,0:禁用;',
+    create_user varchar(30) null comment '创建人',
+    create_time date        null comment '创建时间',
+    modify_user varchar(30) null comment '修改人',
+    modify_time date        null comment '修改时间',
+    data_status varchar(30) null comment '数据状态 1:有效,0:无效;'
 );
 ```
 配置前缀为mp.tool.generator,数据库配置默认由spring.datasource或spring.datasource.druid下读取
 为了方便配置读取需要借助spring注入运行
 ```java
 @RunWith(SpringRunner.class)
-@SpringBootTest
-public class BaseTest {
-     @Autowired
-     private CodeGeneratorUtils codeGeneratorUtils; 
-     @Test
-     public void generator() {
+@SpringBootTest(classes = CodeGeneratorAutoConfiguration.class)
+public class AutoGeneratorTest {
+    @Autowired
+    private CodeGeneratorUtils codeGeneratorUtils;
+
+    @Test
+    public void generator() {
         codeGeneratorUtils.generator();
-     }
+    }
 }
 ```
 支持所有的原生配置,例如:
@@ -117,7 +122,7 @@ hx:
       deserializer-class: com.maple.JacksonEnumSerializer
 ```
 
-计划变更: 多文件夹生成,根据备注生成枚举
+计划变更: 优化生成枚举功能，自行解析yaml文件
   
 ### mp-shiro-spring-boot-starter
 基于官方starter再封装  
