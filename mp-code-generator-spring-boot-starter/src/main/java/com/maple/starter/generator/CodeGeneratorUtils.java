@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.generator.config.GlobalConfig;
 import com.baomidou.mybatisplus.generator.config.TemplateConfig;
 import com.baomidou.mybatisplus.generator.config.converts.MySqlTypeConvert;
 import com.baomidou.mybatisplus.generator.config.rules.IColumnType;
-import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.maple.starter.generator.properties.CodeGeneratorProperties;
 import com.maple.starter.generator.properties.DbProperties;
 import lombok.AllArgsConstructor;
@@ -45,10 +44,8 @@ public class CodeGeneratorUtils {
                 .setPassword(dbProperties.getPassword());
 
         generator.setCodeGeneratorProperties(codeGeneratorProperties);
-        // 模板配置 不生成xml
-        TemplateConfig templateConfig = new TemplateConfig().setXml(null);
         // 启用设置 并执行生成
-        generator.setDataSource(dsc).setTemplateEngine(new FreemarkerTemplateEngine()).setTemplate(templateConfig);
+        generator.setDataSource(dsc);
         generator.execute();
     }
 }

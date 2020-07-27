@@ -71,7 +71,10 @@ mp:
   tool:
     generator:
       gen-tables: test
-      base-package: com.maple.enumeration
+      enum-config:
+        enabled: true
+      model-name: admin
+
   shiro:
     cache:
       redis:

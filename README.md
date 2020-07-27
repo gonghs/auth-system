@@ -38,6 +38,17 @@ mp-shiro-spring-boot-starter(shiro starter)
 ## starter配置介绍
 
 ### mp-code-generator-spring-boot-starter
+示例表创建语句:
+```html
+create table manager.test
+(
+	id int not null
+		primary key,
+	username varchar(30) null comment '用户名',
+	password varchar(30) null comment '密码',
+	status int null comment '状态 1:有效,0:无效;'
+);
+```
 配置前缀为mp.tool.generator,数据库配置默认由spring.datasource或spring.datasource.druid下读取
 为了方便配置读取需要借助spring注入运行
 ```java
@@ -60,17 +71,50 @@ mp:
       global:
         fileOverride: true
 ```
-将部分配置移动至顶层并新增部分配置
+将部分配置移动至顶层并新增部分配置,以下仅介绍新增配置
+枚举序列化配置可以参考文章[如何在springboot优雅的使用枚举](http://www.ice-maple.com/2020/06/23/Springboot%20Enum/)
 ```yaml
-mp:
+hx:
   tool:
-    generator:
-      # 相当于globalConfig.include
-      gen-tables: xxx,xxx
-      # 相当于packageConfig.parent
-      base-package: com.maple
-      # 模块名 模块名将统一插入实际生成的文件之前 例如entity的文件路径将是 basePackage + entity + modelName + '文件名'
-      model-name: admin
+    # 相当于globalConfig.include
+    gen-tables: xxx,xxx
+    # 相当于packageConfig.parent
+    base-package: com.maple
+    # 模块名 模块名将统一插入实际生成的文件之前 例如entity的文件路径将是 basePackage + entity + modelName + '文件名'
+    model-name: admin
+    # 定义组织目录的方式(即文件的目录结构) 以entity为例默认为 entityDir(dir) + basePackage(pkg) + entity(subPkg) + modelName(dir)
+    path-struct: '{dir}/{pkg}/{subPkg}/{mod}'
+    # 增加相关的dir配置 dir不会纳入包名中 可使用%s占位 将会全部替换为modelName
+    package-config:
+      entity-dir: mp-entity-%s
+      mapper-dir: mp-mapper-%s
+      service-dir: mp-service-%s
+      serviceImpl-dir: mp-service-%s
+      controller-dir: mp-controller-%s
+      # 如果需要单独为某个生成模板组织目录 可采用此配置 定义方式与path-struct类似 可以使用｛global｝直接获取path-struct的值
+      custom-path: 
+        serviceImpl: '{global}.impl'
+        
+    # 枚举生成相关配置 由于是额外功能 因此单独列一个配置 根据注释生成枚举 基本格式为 code:desc,code:desc; 例如 1:有效,0:无效;
+    enum-config:
+      # 是否开启 默认不开启
+      enabled: true
+      # 是否使用lombok 默认使用 为枚举增加@Getter和@AllArgsConstructor
+      lombokModel: true
+      # 目录名
+      enumDir: 
+      # 包名
+      enum-pkg-name: com.maple.BaseEnum
+      # 实现接口 目前只支持一个
+      implement-interface: com.maple.BaseEnum
+      # 枚举模板路径
+      template-path: /templates/fieldEnum.java
+      # 反序列化配置 目前只支持fastJson和jackson 如果采用全局配置的方式可以忽略 
+      # fastJson在类上追加 @JsonDeserialize(using = JacksonEnumSerializer.class)
+      # jackson在类上追加 @JSONType(deserializer = ${deserializerClassName}.class)   
+      deserializer-type: jackson
+      # 反序列化类 此配置为空则不会增加反序列配置注解
+      deserializer-class: com.maple.JacksonEnumSerializer
 ```
 
 计划变更: 多文件夹生成,根据备注生成枚举

@@ -24,12 +24,12 @@ public enum DataStatusEnum implements BaseEnum {
     /**
      * 值
      */
-    private Integer value;
+    private final Integer value;
 
     /**
      * 描述
      */
-    private String desc;
+    private final String desc;
 
     @Override
     public String toString() {

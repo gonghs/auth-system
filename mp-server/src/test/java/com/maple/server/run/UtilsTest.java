@@ -4,7 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.json.JSONUtil;
-import com.maple.server.common.entity.MyRealm;
+import com.maple.server.function.auth.MyRealm;
 import com.maple.starter.generator.properties.CodeGeneratorProperties;
 import com.maple.starter.generator.utils.YmlUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -16,9 +16,6 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * huTools/apacheUtils 测试

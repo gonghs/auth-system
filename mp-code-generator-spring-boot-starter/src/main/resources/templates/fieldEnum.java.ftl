@@ -1,24 +1,45 @@
-package com.maple.server.common.enums;
+package ${package.Enum};
 
+<#if lombokModel>
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+</#if>
+<#list import as pkg>
+import ${pkg};
+</#list>
 
-import com.alibaba.fastjson.annotation.JSONType;
-
-
-@JSONType(deserializer = EnumDeserializer.class)
-public enum ${field.capitalName}Enum {
+<#if lombokModel>
+@Getter
+@AllArgsConstructor
+</#if>
+<#if (deserializerType??) && deserializerType == 0 >
+    <#if deserializerType == 0 && deserializerClassName?? && deserializerClassName?trim?length gt 0>
+@JSONType(deserializer = ${deserializerClassName}.class)
+    </#if>
+    <#if deserializerType == 1 && deserializerClassName?? && deserializerClassName?trim?length gt 0>
+@JsonDeserialize(using = ${deserializerClassName}.class)
+    </#if>
+</#if>
+<#if (interface??) && interface?trim?length gt 0>
+public enum ${field.customMap.enumCapitalName} implement ${interface} {
+<#else>
+public enum ${field.customMap.enumCapitalName} {
+</#if>
     /**
      * 枚举列表
      */
-    <#list enumList as enum>
+<#list enumList as enum>
     <#if enum_has_next>
     ${enum.name}("${enum.value}","${enum.desc}"),
     <#else>
     ${enum.name}("${enum.value}","${enum.desc}");
     </#if>
-    </#list>
-    ${field.capitalName}(Integer value, String desc){
+</#list>
+<#if !lombokModel>
+    ${field.customMap.enumCapitalName}(Integer value, String desc){
 
     }
+</#if>
     /**
      * 值
      */

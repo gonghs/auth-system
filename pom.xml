@@ -39,6 +39,7 @@
         <swagger-annotations.version>1.5.22</swagger-annotations.version>
         <swagger-bootstrap-ui.version>1.9.4</swagger-bootstrap-ui.version>
         <sun-tools.version>1.8</sun-tools.version>
+        <jwt.version>3.10.3</jwt.version>
     </properties>
 
     <dependencyManagement>
@@ -161,6 +162,11 @@
                 <groupId>com.sun</groupId>
                 <artifactId>tools</artifactId>
                 <version>${sun-tools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.auth0</groupId>
+                <artifactId>java-jwt</artifactId>
+                <version>${jwt.version}</version>
             </dependency>
         </dependencies>
 
