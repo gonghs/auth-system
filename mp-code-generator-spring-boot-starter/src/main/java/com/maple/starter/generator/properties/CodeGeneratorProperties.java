@@ -150,7 +150,7 @@ public class CodeGeneratorProperties {
          */
         private String deserializerClass = "com.maple.EnumDeserializer";
         /**
-         * 字段列表配置
+         * 字段列表配置 TODO
          */
         private List<Field> fields = CollUtil.newArrayList(new Field("java.lang.Integer", "value")
                 , new Field("java.lang.String", "desc"));
