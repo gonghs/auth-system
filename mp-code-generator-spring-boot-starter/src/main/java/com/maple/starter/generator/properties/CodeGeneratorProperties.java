@@ -94,6 +94,7 @@ public class CodeGeneratorProperties {
          */
         private Map<String, String> customPath =
                 MapUtil.builder("serviceImpl", PathStructConst.GLOBAL + "/impl").build();
+
         @Override
         public String getParent() {
             return basePackage;
@@ -132,7 +133,7 @@ public class CodeGeneratorProperties {
          */
         private String enumName = "%sEnum";
         /**
-         * 枚举父类
+         * 类实现接口 允许使用%s占位 将使用字段列表中类型为code的className替换
          */
         private String implementInterface = "com.maple.BaseEnum";
         /**
@@ -150,22 +151,38 @@ public class CodeGeneratorProperties {
          */
         private String deserializerClass = "com.maple.EnumDeserializer";
         /**
-         * 字段列表配置 TODO
+         * 字段列表配置
          */
-        private List<Field> fields = CollUtil.newArrayList(new Field("java.lang.Integer", "value")
-                , new Field("java.lang.String", "desc"));
+        private List<Field> fields = CollUtil.newArrayList(Field.code("java.lang.Integer", "value")
+                , Field.other("java.lang.String", "desc"));
 
         @AllArgsConstructor
         @NoArgsConstructor
         public static class Field {
             /**
-             * 字段类型
+             * 字段类型 至少需要有一条数据指定类型为code
              */
-            private String type;
+            private EnumFieldTypeEnum type;
+            /**
+             * 字段类名
+             */
+            private String className;
             /**
              * 字段名
              */
             private String name;
+
+            public static Field code(String className, String name) {
+                return new Field(EnumFieldTypeEnum.CODE, className, name);
+            }
+
+            public static Field other(String className, String name) {
+                return new Field(EnumFieldTypeEnum.OTHER, className, name);
+            }
+        }
+
+        public enum EnumFieldTypeEnum {
+            CODE, OTHER
         }
 
         public enum DeserializerTypeEnum {

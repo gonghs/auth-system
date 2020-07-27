@@ -1,6 +1,7 @@
 package com.maple.starter.generator.ext;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.map.MapBuilder;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
@@ -17,10 +18,7 @@ import com.maple.common.utils.TranslateUtils;
 import com.maple.starter.generator.properties.CodeGeneratorProperties;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -99,7 +97,7 @@ public class FreemarkerTemplateEngineExt extends FreemarkerTemplateEngine {
                         , this.enumConfig.getEnumPkgName()
                         , tableI -> enumCapitalName, this.enumConfig.getTemplatePath()
                         , "Enum");
-                field.setColumnType(new ColumnTypeExt(enumCapitalName, enumConfig.getImportPkg()));
+                field.setColumnType(new ColumnTypeExt(enumCapitalName, enumConfig.getImportPkgWithFileName(tableInfo)));
                 // 枚举字段信息 用于实体生成 导入依赖和更改字段类型
                 Map<String, Object> enumFieldMap = MapUtil.<String, Object>builder()
                         .put("enumPkg", field.getColumnType().getPkg())
@@ -113,6 +111,8 @@ public class FreemarkerTemplateEngineExt extends FreemarkerTemplateEngine {
                 }
                 // 为了防止配置覆盖 手动生成这部分 不放入配置列表
                 MapBuilder<String, Object> enumObjectMap = MapUtil.<String, Object>builder()
+                        .put("author", objectMap.get("author"))
+                        .put("date", DateUtil.format(new Date(),"yyyy-MM-dd"))
                         .put("package", objectMap.get("package"))
                         // 搜集需要导入的包名
                         .put("import", getImportPkg(enumConfig))
@@ -122,6 +122,7 @@ public class FreemarkerTemplateEngineExt extends FreemarkerTemplateEngine {
                         .put("deserializerType", this.enumConfig.getDeserializerType().ordinal())
                         .put("deserializerClassName", getClassName(this.enumConfig.getDeserializerClass()))
                         .put("interface", getClassName(this.enumConfig.getImplementInterface()));
+
                 if (isCreate(FileType.OTHER, enumConfig.outputFile(tableInfo))) {
                     writer(enumObjectMap.build(), enumConfig.getTemplatePath(), enumConfig.outputFile(tableInfo));
                 }
@@ -134,7 +135,7 @@ public class FreemarkerTemplateEngineExt extends FreemarkerTemplateEngine {
 
     private List<String> getImportPkg(FileOutConfigExt enumConfig) {
         List<String> importPkgList = CollUtil.newArrayList();
-        importPkgList.add(this.enumConfig.getImplementInterface());
+        importPkgList.add(StrUtil.replace(this.enumConfig.getImplementInterface(),"%s",""));
         importPkgList.add(this.enumConfig.getDeserializerClass());
         if (StrUtil.isBlank(this.enumConfig.getDeserializerClass())) {
             return importPkgList.stream().filter(StrUtil::isNotBlank).collect(Collectors.toList());

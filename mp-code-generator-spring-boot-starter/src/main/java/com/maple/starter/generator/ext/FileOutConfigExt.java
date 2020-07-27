@@ -43,10 +43,13 @@ public class FileOutConfigExt extends com.baomidou.mybatisplus.generator.config.
 
     @Override
     public String outputFile(TableInfo tableInfo) {
-        return PathStructConst.joinPath(codeGeneratorProperties.getGlobalConfig().getOutputDir(), getImportPkg()) + File.separator + fileNameGetter.apply(tableInfo) + suffixJavaOrKt();
+        return PathStructConst.joinPath(codeGeneratorProperties.getGlobalConfig().getOutputDir(), getFilePath()) + File.separator + getFileName(tableInfo)  + suffixJavaOrKt();
     }
 
-    public String getImportPkg() {
+    /**
+     * 获取文件路径
+     */
+    public String getFilePath() {
         return joinPackage(
                 MapUtil.builder(PathStructConst.DIR, StrUtil.replace(dir, "%s", mod))
                         .put(PathStructConst.PKG, pkg)
@@ -54,6 +57,30 @@ public class FileOutConfigExt extends com.baomidou.mybatisplus.generator.config.
                         .put(PathStructConst.MOD, mod)
                         .build()
         );
+    }
+
+    /**
+     * 获取包路径
+     */
+    public String getImportPkg() {
+        return joinPackage(
+                MapUtil.builder(PathStructConst.DIR, "")
+                        .put(PathStructConst.PKG, pkg)
+                        .put(PathStructConst.SUB_PKG, subPkg)
+                        .put(PathStructConst.MOD, mod)
+                        .build()
+        );
+    }
+
+    /**
+     * 获取带文件名的包路径
+     */
+    public String getImportPkgWithFileName(TableInfo tableInfo) {
+        return getImportPkg() + SymbolConst.POINT + getFileName(tableInfo);
+    }
+
+    public String getFileName(TableInfo tableInfo) {
+        return fileNameGetter.apply(tableInfo);
     }
 
     /**

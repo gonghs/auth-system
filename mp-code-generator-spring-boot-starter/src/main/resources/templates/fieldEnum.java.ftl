@@ -8,6 +8,14 @@ import lombok.Getter;
 import ${pkg};
 </#list>
 
+/**
+ * <p>
+ * ${field.comment!}
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
 <#if lombokModel>
 @Getter
 @AllArgsConstructor

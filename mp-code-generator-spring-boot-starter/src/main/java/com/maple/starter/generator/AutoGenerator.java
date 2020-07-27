@@ -46,7 +46,7 @@ public class AutoGenerator extends com.baomidou.mybatisplus.generator.AutoGenera
             setTemplateEngine(new FreemarkerTemplateEngineExt().init(codeGeneratorProperties,enumConfig));
         }
         // 模板引擎初始化执行文件输出
-        this.getTemplateEngine().init(this.pretreatmentConfigBuilder(config)).mkdirs().batchOutput().open();
+        this.getTemplateEngine().init(this.pretreatmentConfigBuilder(config)).batchOutput().open();
         log.info("==========================文件生成完成！！！==========================");
     }
 
