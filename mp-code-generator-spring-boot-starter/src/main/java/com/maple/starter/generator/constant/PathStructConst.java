@@ -25,17 +25,6 @@ public class PathStructConst {
     public static final String SUB_PKG = "{subPkg}";
     public static final String GLOBAL = "{global}";
     public static final String DEFAULT = StrUtil.join(File.separator, DIR, PKG, SUB_PKG, MOD);
-    public static final Pattern MATCH_STRUCT = Pattern.compile("dir|pkg|mod|subPkg");
-
-    public static List<String> getList(String pathStructStr) {
-        Matcher matcher = MATCH_STRUCT.matcher(pathStructStr);
-        List<String> rsList = new ArrayList<>();
-        while (matcher.find()) {
-            rsList.add(matcher.group(0));
-        }
-        return rsList;
-    }
-
     /**
      * 连接路径字符串
      *

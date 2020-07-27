@@ -250,15 +250,4 @@ public class FreemarkerTemplateEngineExt extends FreemarkerTemplateEngine {
     private String getClassName(String fullClassName) {
         return StrUtil.subAfter(fullClassName, SymbolConst.POINT, true);
     }
-
-    /**
-     * 从完整类名获取包名
-     *
-     * @param fullClassName 完整类名
-     * @return 类名
-     */
-    private String getPkg(String fullClassName) {
-        return StrUtil.subBefore(fullClassName, SymbolConst.POINT, true);
-    }
-
 }
