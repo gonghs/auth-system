@@ -37,29 +37,22 @@ public enum ${field.customMap.enumCapitalName} {
      * 枚举列表
      */
 <#list enumList as enum>
-    <#if enum_has_next>
-    ${enum.name}("${enum.value}","${enum.desc}"),
-    <#else>
-    ${enum.name}("${enum.value}","${enum.desc}");
+    <#if enum.params??>
+    ${enum.name}(<#list enum.params as param><#if param.number>${param.value}<#else>"${param.value}"</#if><#if param_has_next>,</#if></#list>)<#if enum_has_next>,<#else>;</#if>
     </#if>
 </#list>
 <#if !lombokModel>
-    ${field.customMap.enumCapitalName}(Integer value, String desc){
+    ${field.customMap.enumCapitalName}(<#list enumFieldList as param>${param.className} ${param.name}<#if param_has_next>,</#if></#list>){
 
     }
 </#if>
-    /**
-     * 值
-     */
-    private Integer value;
 
+    <#list enumFieldList as param>
+    <#if (param.desc??) && param.desc?trim?length gt 0>
     /**
-     * 描述
+     * ${param.desc}
      */
-    private String desc;
-
-    @Override
-    public String toString() {
-        return getDesc();
-    }
+    </#if>
+    private ${param.className} ${param.name};
+    </#list>
 }

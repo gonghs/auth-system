@@ -15,6 +15,7 @@ import com.baomidou.mybatisplus.generator.engine.AbstractTemplateEngine;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.maple.common.constant.SymbolConst;
 import com.maple.common.utils.TranslateUtils;
+import com.maple.starter.generator.constant.TemplateType;
 import com.maple.starter.generator.properties.CodeGeneratorProperties;
 import lombok.extern.slf4j.Slf4j;
 
@@ -68,27 +69,44 @@ public class FreemarkerTemplateEngineExt extends FreemarkerTemplateEngine {
      */
     protected Map<String, Object> genEnumAndInitFieldEnumInfo(TableInfo tableInfo) {
         Map<String, Object> objectMap = super.getObjectMap(tableInfo);
-        if (!enumConfig.isEnabled()) {
+        if (!enumConfig.isEnabled() || StrUtil.isBlank(enumConfig.getTemplatePath())) {
             return objectMap;
         }
         // 注释满足格式[码值]:[描述],[码值]:[描述]; 则生成一个枚举类
         if (CollUtil.isEmpty(tableInfo.getFields())) {
             return objectMap;
         }
+        // 根据类型排序 保证有code则code类型在首位 未定义默认值的数据
+        List<EnumField> enumFieldList =
+                this.enumConfig.getFields().stream()
+                        .filter(item -> StrUtil.isBlank(item.getValue()))
+                        .sorted(Comparator.comparingInt(item -> item.getType().ordinal())).collect(Collectors.toList());
+        // 定义了默认值的数组
+        List<EnumField> defaultValueEnumFieldList =
+                this.enumConfig.getFields().stream()
+                        .filter(item -> StrUtil.isNotBlank(item.getValue()))
+                        .sorted(Comparator.comparingInt(item -> item.getType().ordinal())).collect(Collectors.toList());
         for (TableField field : tableInfo.getFields()) {
             Matcher matcher = commonPattern.matcher(field.getComment());
             if (!matcher.find()) {
                 continue;
             }
+
             // 搜集枚举数组
-            List<Map<String, String>> enumList =
+            List<Map<String, Object>> enumList =
                     StrUtil.splitTrim(matcher.group(0), SymbolConst.COMMA).stream().filter(str ->
-                            str.split(SymbolConst.COLON).length == this.enumConfig.getFields().size()).map(str ->
+                            str.split(SymbolConst.COLON).length == enumFieldList.size()).map(str ->
                     {
-                        String[] valueAndDesc = str.split(SymbolConst.COLON);
-                        return MapUtil.<String, String>builder().put("value", valueAndDesc[0]).put("desc",
-                                valueAndDesc[1]).put("name",
-                                getEnumName(field, valueAndDesc[0], valueAndDesc[1])).build();
+
+                        String[] codeAndParamArr = str.split(SymbolConst.COLON);
+                        for (int i = 0; i < codeAndParamArr.length; i++) {
+                            enumFieldList.get(i).setValue(codeAndParamArr[i]);
+                        }
+                        // 参数
+                        return MapUtil.<String, Object>builder().put("params"
+                                , CollUtil.addAll(enumFieldList, defaultValueEnumFieldList))
+                                // 枚举名 默认值为
+                                .put("name", getEnumName(field, codeAndParamArr[0], codeAndParamArr[1])).build();
                     }).collect(Collectors.toList());
             try {
                 String enumCapitalName = String.format(this.enumConfig.getEnumName(), field.getCapitalName());
@@ -97,6 +115,7 @@ public class FreemarkerTemplateEngineExt extends FreemarkerTemplateEngine {
                         , this.enumConfig.getEnumPkgName()
                         , tableI -> enumCapitalName, this.enumConfig.getTemplatePath()
                         , "Enum");
+                Objects.requireNonNull(enumConfig);
                 field.setColumnType(new ColumnTypeExt(enumCapitalName, enumConfig.getImportPkgWithFileName(tableInfo)));
                 // 枚举字段信息 用于实体生成 导入依赖和更改字段类型
                 Map<String, Object> enumFieldMap = MapUtil.<String, Object>builder()
@@ -109,19 +128,26 @@ public class FreemarkerTemplateEngineExt extends FreemarkerTemplateEngine {
                 } else {
                     field.getCustomMap().putAll(enumFieldMap);
                 }
+                Collection<EnumField> allEnumFieldList = CollUtil.addAll(enumFieldList,
+                        defaultValueEnumFieldList);
                 // 为了防止配置覆盖 手动生成这部分 不放入配置列表
                 MapBuilder<String, Object> enumObjectMap = MapUtil.<String, Object>builder()
                         .put("author", objectMap.get("author"))
-                        .put("date", DateUtil.format(new Date(),"yyyy-MM-dd"))
+                        .put("date", DateUtil.format(new Date(), "yyyy-MM-dd"))
                         .put("package", objectMap.get("package"))
+                        .put("enumFieldList", allEnumFieldList)
                         // 搜集需要导入的包名
-                        .put("import", getImportPkg(enumConfig))
+                        .put("import", getImportPkg(allEnumFieldList))
                         .put("field", field)
                         .put("enumList", enumList)
                         .put("lombokModel", this.enumConfig.isLombokModel())
                         .put("deserializerType", this.enumConfig.getDeserializerType().ordinal())
-                        .put("deserializerClassName", getClassName(this.enumConfig.getDeserializerClass()))
-                        .put("interface", getClassName(this.enumConfig.getImplementInterface()));
+                        // 将接口占位符替换为 code类型字段的类名
+                        .put("deserializerClassName",
+                                getClassName(this.enumConfig.getDeserializerClass()))
+                        .put("interface", getClassName(StrUtil.replace(this.enumConfig.getImplementInterface(), "%s",
+                                enumFieldList.stream().filter(item -> Objects.equals(item.getType(),
+                                        EnumField.EnumFieldTypeEnum.CODE)).findFirst().map(EnumField::getClassName).orElse("Object"))));
 
                 if (isCreate(FileType.OTHER, enumConfig.outputFile(tableInfo))) {
                     writer(enumObjectMap.build(), enumConfig.getTemplatePath(), enumConfig.outputFile(tableInfo));
@@ -133,10 +159,20 @@ public class FreemarkerTemplateEngineExt extends FreemarkerTemplateEngine {
         return objectMap;
     }
 
-    private List<String> getImportPkg(FileOutConfigExt enumConfig) {
+    private List<String> getImportPkg(Collection<EnumField> enumFieldList) {
         List<String> importPkgList = CollUtil.newArrayList();
-        importPkgList.add(StrUtil.replace(this.enumConfig.getImplementInterface(),"%s",""));
+        importPkgList.add(StrUtil.replace(this.enumConfig.getImplementInterface(), "<%s>", ""));
         importPkgList.add(this.enumConfig.getDeserializerClass());
+        // 枚举字段相关导入包
+        List<String> clazzList =
+                enumFieldList.stream().map(EnumField::getClazz).collect(Collectors.toList());
+        for (String clazz : clazzList) {
+            // java.lang包不需要导入
+            if (StrUtil.startWith(clazz, "java.lang")) {
+                continue;
+            }
+            importPkgList.add(StrUtil.subBefore(clazz, SymbolConst.POINT, true));
+        }
         if (StrUtil.isBlank(this.enumConfig.getDeserializerClass())) {
             return importPkgList.stream().filter(StrUtil::isNotBlank).collect(Collectors.toList());
         }
@@ -174,32 +210,70 @@ public class FreemarkerTemplateEngineExt extends FreemarkerTemplateEngine {
         getConfigBuilder().getPackageInfo().put(ConstVal.MODULE_NAME, codeGeneratorProperties.getModelName());
         // 默认文件输出列表
         List<com.baomidou.mybatisplus.generator.config.FileOutConfig> focList = new ArrayList<>();
-        focList.add(getFileConfigAndInitPkg(codeGeneratorProperties.getPackageConfig().getEntityDir()
-                , codeGeneratorProperties.getPackageConfig().getEntity()
-                , TableInfo::getEntityName
-                , ConstVal.TEMPLATE_ENTITY_JAVA, ConstVal.ENTITY));
-        focList.add(getFileConfigAndInitPkg(codeGeneratorProperties.getPackageConfig().getMapperDir()
-                , codeGeneratorProperties.getPackageConfig().getMapper()
-                , TableInfo::getMapperName
-                , ConstVal.TEMPLATE_MAPPER, ConstVal.MAPPER));
-        focList.add(getFileConfigAndInitPkg(codeGeneratorProperties.getPackageConfig().getServiceDir()
-                , codeGeneratorProperties.getPackageConfig().getService()
-                , TableInfo::getServiceName
-                , ConstVal.TEMPLATE_SERVICE, ConstVal.SERVICE));
-        focList.add(getFileConfigAndInitPkg(codeGeneratorProperties.getPackageConfig().getServiceImplDir()
-                , codeGeneratorProperties.getPackageConfig().getServiceImpl()
-                , TableInfo::getServiceImplName
-                , ConstVal.TEMPLATE_SERVICE_IMPL, ConstVal.SERVICE_IMPL));
-        focList.add(getFileConfigAndInitPkg(codeGeneratorProperties.getPackageConfig().getControllerDir()
-                , codeGeneratorProperties.getPackageConfig().getController()
-                , TableInfo::getControllerName
-                , ConstVal.TEMPLATE_CONTROLLER, ConstVal.CONTROLLER));
 
+        for (TemplateType templateType : TemplateType.values()) {
+            FileOutConfigExt fileOutConfigExt = getByType(templateType);
+            if (Objects.isNull(fileOutConfigExt)) {
+                continue;
+            }
+            focList.add(fileOutConfigExt);
+        }
+        if (Objects.isNull(codeGeneratorProperties.getTemplateConfig().getCustomTemplates())) {
+            addFileOutConfigList(focList);
+            return;
+        }
+        // 渲染自定义模板
+        for (CustomTemplate customTemplate : codeGeneratorProperties.getTemplateConfig().getCustomTemplates()) {
+            FileOutConfigExt fileOutConfigExt = getByType(customTemplate.getTemplateType());
+            if (Objects.isNull(fileOutConfigExt) || StrUtil.isBlank(customTemplate.getName())) {
+                continue;
+            }
+            fileOutConfigExt.setFileNameGetter(item -> StrUtil.upperFirst(String.format(customTemplate.getName(),
+                    item.getName())));
+            focList.add(fileOutConfigExt);
+        }
         addFileOutConfigList(focList);
+    }
+
+    private FileOutConfigExt getByType(TemplateType templateType) {
+        Objects.requireNonNull(templateType);
+        switch (templateType) {
+            case ENTITY:
+                return getFileConfigAndInitPkg(codeGeneratorProperties.getPackageConfig().getEntityDir()
+                        , codeGeneratorProperties.getPackageConfig().getEntity()
+                        , TableInfo::getEntityName
+                        , codeGeneratorProperties.getTemplateConfig().getEntity(false), ConstVal.ENTITY);
+            case MAPPER:
+                return getFileConfigAndInitPkg(codeGeneratorProperties.getPackageConfig().getMapperDir()
+                        , codeGeneratorProperties.getPackageConfig().getMapper()
+                        , TableInfo::getMapperName
+                        , codeGeneratorProperties.getTemplateConfig().getMapper(), ConstVal.MAPPER);
+            case SERVICE:
+                return getFileConfigAndInitPkg(codeGeneratorProperties.getPackageConfig().getServiceDir()
+                        , codeGeneratorProperties.getPackageConfig().getService()
+                        , TableInfo::getServiceName
+                        , codeGeneratorProperties.getTemplateConfig().getService(), ConstVal.SERVICE);
+            case SERVICE_IMPL:
+                return getFileConfigAndInitPkg(codeGeneratorProperties.getPackageConfig().getServiceImplDir()
+                        , codeGeneratorProperties.getPackageConfig().getServiceImpl()
+                        , TableInfo::getServiceImplName
+                        , codeGeneratorProperties.getTemplateConfig().getServiceImpl(), ConstVal.SERVICE_IMPL);
+            case CONTROLLER:
+                return getFileConfigAndInitPkg(codeGeneratorProperties.getPackageConfig().getControllerDir()
+                        , codeGeneratorProperties.getPackageConfig().getController()
+                        , TableInfo::getControllerName
+                        , codeGeneratorProperties.getTemplateConfig().getController(), ConstVal.CONTROLLER);
+            default:
+                return null;
+        }
     }
 
     private FileOutConfigExt getFileConfigAndInitPkg(String dir, String subPkg
             , Function<TableInfo, String> fileNameGetter, String templatePath, String pkgKey) {
+        // 模板路径被清空则不再跳过生成
+        if (StrUtil.isBlank(templatePath)) {
+            return null;
+        }
         FileOutConfigExt cfg = new FileOutConfigExt(codeGeneratorProperties)
                 .setDir(dir)
                 .setSubPkg(subPkg)

@@ -4,7 +4,11 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.maple.starter.generator.constant.PathStructConst;
-import lombok.*;
+import com.maple.starter.generator.ext.CustomTemplate;
+import com.maple.starter.generator.ext.EnumField;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -99,6 +103,11 @@ public class CodeGeneratorProperties {
         public String getParent() {
             return basePackage;
         }
+
+        @Override
+        public String getModuleName() {
+            return modelName;
+        }
     }
 
     @Getter
@@ -106,6 +115,10 @@ public class CodeGeneratorProperties {
     @Accessors(chain = true)
     public static class TemplateConfig extends com.baomidou.mybatisplus.generator.config.TemplateConfig {
         private String xml = null;
+        /**
+         * 自定义模板 支持拷贝entity,service,mapper,serviceImpl,controller等任意一个模板进行生成
+         */
+        private List<CustomTemplate> customTemplates = CollUtil.newArrayList(new CustomTemplate());
     }
 
     @Getter
@@ -133,9 +146,9 @@ public class CodeGeneratorProperties {
          */
         private String enumName = "%sEnum";
         /**
-         * 类实现接口 允许使用%s占位 将使用字段列表中类型为code的className替换
+         * 类实现接口 允许使用%s占位 将使用字段列表中类型为code的className替换 例如com.maple.BaseEnum<%s>
          */
-        private String implementInterface = "com.maple.BaseEnum";
+        private String implementInterface = "com.maple.BaseEnum<%s>";
         /**
          * 枚举模板路径
          */
@@ -153,37 +166,9 @@ public class CodeGeneratorProperties {
         /**
          * 字段列表配置
          */
-        private List<Field> fields = CollUtil.newArrayList(Field.code("java.lang.Integer", "value")
-                , Field.other("java.lang.String", "desc"));
+        private List<EnumField> fields = CollUtil.newArrayList(EnumField.code("java.lang.Integer", "value", "枚举值")
+                , EnumField.other("java.lang.String", "desc", "枚举描述"));
 
-        @AllArgsConstructor
-        @NoArgsConstructor
-        public static class Field {
-            /**
-             * 字段类型 至少需要有一条数据指定类型为code
-             */
-            private EnumFieldTypeEnum type;
-            /**
-             * 字段类名
-             */
-            private String className;
-            /**
-             * 字段名
-             */
-            private String name;
-
-            public static Field code(String className, String name) {
-                return new Field(EnumFieldTypeEnum.CODE, className, name);
-            }
-
-            public static Field other(String className, String name) {
-                return new Field(EnumFieldTypeEnum.OTHER, className, name);
-            }
-        }
-
-        public enum EnumFieldTypeEnum {
-            CODE, OTHER
-        }
 
         public enum DeserializerTypeEnum {
             FAST_JSON, JACKSON,
