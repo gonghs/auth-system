@@ -99,7 +99,17 @@ hx:
       # 如果需要单独为某个生成模板组织目录 可采用此配置 定义方式与path-struct类似 可以使用｛global｝直接获取path-struct的值
       custom-path: 
         serviceImpl: '{global}.impl'
-        
+        reqDto: '{global}.req'
+        respDto: '{global}.resp'
+    # 自定义模板 template-type指定拷贝某个模板 class-name为变更的类名（若无变更则相当于没配置） 若要重新指定目录则在 custom-path 以template.name为key处指定
+    template-config:
+      custom-templates:
+        - name: reqDto
+          template-type: entity
+          class-name: '%sReqDTO'
+        - name: respDto
+          template-type: service
+          class-name: '%sRespDTO'  
     # 枚举生成相关配置 由于是额外功能 因此单独列一个配置 根据注释生成枚举 基本格式为 code:desc,code:desc; 例如 1:有效,0:无效;
     enum-config:
       # 是否开启 默认不开启
