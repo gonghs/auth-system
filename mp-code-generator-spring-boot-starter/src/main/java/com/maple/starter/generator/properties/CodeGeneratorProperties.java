@@ -46,7 +46,7 @@ public class CodeGeneratorProperties {
         private String outputDir = System.getProperty("user.dir") + "/gen/";
         private boolean swagger2 = true;
         private boolean fileOverride = false;
-        private String entityName = "%sDTO";
+        private String entityName = "%sEntity";
         private String mapperName = "%sMapper";
         private String xmlName = "%sMapper";
         private String serviceName = "%sService";
@@ -118,7 +118,8 @@ public class CodeGeneratorProperties {
         /**
          * 自定义模板 支持拷贝entity,service,mapper,serviceImpl,controller等任意一个模板进行生成
          */
-        private List<CustomTemplate> customTemplates = CollUtil.newArrayList(new CustomTemplate());
+        private List<CustomTemplate> customTemplates = CollUtil.newArrayList(new CustomTemplate(),
+                new CustomTemplate().setName("%sRespDTO"));
     }
 
     @Getter

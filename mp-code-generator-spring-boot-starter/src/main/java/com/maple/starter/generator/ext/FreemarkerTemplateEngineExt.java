@@ -52,7 +52,7 @@ public class FreemarkerTemplateEngineExt extends FreemarkerTemplateEngine {
 
     @Override
     public Map<String, Object> getObjectMap(TableInfo tableInfo) {
-        return genEnumAndInitFieldEnumInfo(tableInfo);
+        return genCustomTempAndInitFieldEnumInfo(tableInfo);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class FreemarkerTemplateEngineExt extends FreemarkerTemplateEngine {
      *
      * @return objectMap 生成参数
      */
-    protected Map<String, Object> genEnumAndInitFieldEnumInfo(TableInfo tableInfo) {
+    protected Map<String, Object> genCustomTempAndInitFieldEnumInfo(TableInfo tableInfo) {
         Map<String, Object> objectMap = super.getObjectMap(tableInfo);
         if (!enumConfig.isEnabled() || StrUtil.isBlank(enumConfig.getTemplatePath())) {
             return objectMap;
@@ -149,14 +149,38 @@ public class FreemarkerTemplateEngineExt extends FreemarkerTemplateEngine {
                                 enumFieldList.stream().filter(item -> Objects.equals(item.getType(),
                                         EnumField.EnumFieldTypeEnum.CODE)).findFirst().map(EnumField::getClassName).orElse("Object"))));
 
-                if (isCreate(FileType.OTHER, enumConfig.outputFile(tableInfo))) {
-                    writer(enumObjectMap.build(), enumConfig.getTemplatePath(), enumConfig.outputFile(tableInfo));
-                }
+                createAndWriteFile(enumObjectMap.build(), enumConfig, tableInfo);
             } catch (Exception e) {
                 log.error("生成枚举错误!!!", e);
             }
         }
+        genCustomTemplate(tableInfo, objectMap);
         return objectMap;
+    }
+
+    /**
+     * 生成自定义模板
+     *
+     * @param tableInfo 表信息
+     * @param objectMap 对象Map
+     */
+    private void genCustomTemplate(TableInfo tableInfo, Map<String, Object> objectMap) {
+        boolean convert = tableInfo.isConvert();
+        Set<String> importPackages = tableInfo.getImportPackages();
+        // 渲染自定义模板
+        for (CustomTemplate customTemplate : codeGeneratorProperties.getTemplateConfig().getCustomTemplates()) {
+            FileOutConfigExt fileOutConfigExt = getByType(customTemplate.getTemplateType());
+            if (Objects.isNull(fileOutConfigExt) || StrUtil.isBlank(customTemplate.getName())) {
+                continue;
+            }
+            String className = StrUtil.upperFirst(String.format(customTemplate.getName(), tableInfo.getName()));
+            fileOutConfigExt.setFileNameGetter(item -> className);
+            objectMap.put("entity", className);
+            createAndWriteFile(objectMap, fileOutConfigExt, tableInfo);
+        }
+        // 还原配置
+        tableInfo.setConvert(convert);
+        objectMap.put("entity", tableInfo.getEntityName());
     }
 
     private List<String> getImportPkg(Collection<EnumField> enumFieldList) {
@@ -218,8 +242,8 @@ public class FreemarkerTemplateEngineExt extends FreemarkerTemplateEngine {
             }
             focList.add(fileOutConfigExt);
         }
+        addFileOutConfigList(focList);
         if (Objects.isNull(codeGeneratorProperties.getTemplateConfig().getCustomTemplates())) {
-            addFileOutConfigList(focList);
             return;
         }
         // 渲染自定义模板
@@ -232,7 +256,6 @@ public class FreemarkerTemplateEngineExt extends FreemarkerTemplateEngine {
                     item.getName())));
             focList.add(fileOutConfigExt);
         }
-        addFileOutConfigList(focList);
     }
 
     private FileOutConfigExt getByType(TemplateType templateType) {
@@ -324,5 +347,17 @@ public class FreemarkerTemplateEngineExt extends FreemarkerTemplateEngine {
      */
     private String getClassName(String fullClassName) {
         return StrUtil.subAfter(fullClassName, SymbolConst.POINT, true);
+    }
+
+    private void createAndWriteFile(Map<String, Object> objectMap, FileOutConfigExt fileOutConfigExt,
+                                    TableInfo tableInfo) {
+        String filePath = fileOutConfigExt.outputFile(tableInfo);
+        if (isCreate(FileType.OTHER, filePath)) {
+            try {
+                writer(objectMap, fileOutConfigExt.getTemplatePath(), filePath);
+            } catch (Exception e) {
+                log.error("文件生成有误", e);
+            }
+        }
     }
 }
