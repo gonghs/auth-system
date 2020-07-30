@@ -97,7 +97,10 @@ public class CodeGeneratorProperties {
          * 全局参数和pathStruct一致{@link #pathStruct} 并增加global参数用于直接获取pathStruct值
          */
         private Map<String, String> customPath =
-                MapUtil.builder("serviceImpl", PathStructConst.GLOBAL + "/impl").build();
+                MapUtil.builder("serviceImpl", PathStructConst.GLOBAL + "/impl")
+                        .put("ReqDTO",PathStructConst.GLOBAL + "/req")
+                        .put("RespDTO",PathStructConst.GLOBAL + "/resp")
+                        .build();
 
         @Override
         public String getParent() {
@@ -118,8 +121,9 @@ public class CodeGeneratorProperties {
         /**
          * 自定义模板 支持拷贝entity,service,mapper,serviceImpl,controller等任意一个模板进行生成
          */
-        private List<CustomTemplate> customTemplates = CollUtil.newArrayList(new CustomTemplate(),
-                new CustomTemplate().setName("%sRespDTO"));
+        private List<CustomTemplate> customTemplates =
+                CollUtil.newArrayList(new CustomTemplate().setName("ReqDTO").setClassName("%sReqDTO"),
+                        new CustomTemplate().setName("RespDTO").setClassName("%sRespDTO"));
     }
 
     @Getter

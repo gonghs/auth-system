@@ -165,18 +165,27 @@ public class FreemarkerTemplateEngineExt extends FreemarkerTemplateEngine {
      * @param objectMap 对象Map
      */
     private void genCustomTemplate(TableInfo tableInfo, Map<String, Object> objectMap) {
+        if (Objects.isNull(codeGeneratorProperties.getTemplateConfig().getCustomTemplates())) {
+            return;
+        }
         boolean convert = tableInfo.isConvert();
-        Set<String> importPackages = tableInfo.getImportPackages();
         // 渲染自定义模板
         for (CustomTemplate customTemplate : codeGeneratorProperties.getTemplateConfig().getCustomTemplates()) {
-            FileOutConfigExt fileOutConfigExt = getByType(customTemplate.getTemplateType());
-            if (Objects.isNull(fileOutConfigExt) || StrUtil.isBlank(customTemplate.getName())) {
+            FileOutConfigExt fileOutConfigExt = getByType(customTemplate.getTemplateType(), customTemplate.getName());
+            if (Objects.isNull(fileOutConfigExt) || StrUtil.isBlank(customTemplate.getClassName())) {
                 continue;
             }
-            String className = StrUtil.upperFirst(String.format(customTemplate.getName(), tableInfo.getName()));
+            String className = StrUtil.upperFirst(String.format(customTemplate.getClassName(), tableInfo.getName()));
             fileOutConfigExt.setFileNameGetter(item -> className);
             objectMap.put("entity", className);
+            tableInfo.setConvert(false);
+            // 修改包参数
+            String oldPkgStr =
+                    getConfigBuilder().getPackageInfo().get(customTemplate.getTemplateType().getTemplateKey());
+            getConfigBuilder().getPackageInfo().put(customTemplate.getTemplateType().getTemplateKey(),
+                    fileOutConfigExt.getImportPkg());
             createAndWriteFile(objectMap, fileOutConfigExt, tableInfo);
+            getConfigBuilder().getPackageInfo().put(customTemplate.getTemplateType().getTemplateKey(), oldPkgStr);
         }
         // 还原配置
         tableInfo.setConvert(convert);
@@ -243,49 +252,45 @@ public class FreemarkerTemplateEngineExt extends FreemarkerTemplateEngine {
             focList.add(fileOutConfigExt);
         }
         addFileOutConfigList(focList);
-        if (Objects.isNull(codeGeneratorProperties.getTemplateConfig().getCustomTemplates())) {
-            return;
-        }
-        // 渲染自定义模板
-        for (CustomTemplate customTemplate : codeGeneratorProperties.getTemplateConfig().getCustomTemplates()) {
-            FileOutConfigExt fileOutConfigExt = getByType(customTemplate.getTemplateType());
-            if (Objects.isNull(fileOutConfigExt) || StrUtil.isBlank(customTemplate.getName())) {
-                continue;
-            }
-            fileOutConfigExt.setFileNameGetter(item -> StrUtil.upperFirst(String.format(customTemplate.getName(),
-                    item.getName())));
-            focList.add(fileOutConfigExt);
-        }
     }
 
     private FileOutConfigExt getByType(TemplateType templateType) {
+        return getByType(templateType, null);
+    }
+
+    private FileOutConfigExt getByType(TemplateType templateType, String customName) {
         Objects.requireNonNull(templateType);
         switch (templateType) {
             case ENTITY:
                 return getFileConfigAndInitPkg(codeGeneratorProperties.getPackageConfig().getEntityDir()
                         , codeGeneratorProperties.getPackageConfig().getEntity()
                         , TableInfo::getEntityName
-                        , codeGeneratorProperties.getTemplateConfig().getEntity(false), ConstVal.ENTITY);
+                        , codeGeneratorProperties.getTemplateConfig().getEntity(false)
+                        , StrUtil.blankToDefault(customName, ConstVal.ENTITY));
             case MAPPER:
                 return getFileConfigAndInitPkg(codeGeneratorProperties.getPackageConfig().getMapperDir()
                         , codeGeneratorProperties.getPackageConfig().getMapper()
                         , TableInfo::getMapperName
-                        , codeGeneratorProperties.getTemplateConfig().getMapper(), ConstVal.MAPPER);
+                        , codeGeneratorProperties.getTemplateConfig().getMapper()
+                        , StrUtil.blankToDefault(customName, ConstVal.MAPPER));
             case SERVICE:
                 return getFileConfigAndInitPkg(codeGeneratorProperties.getPackageConfig().getServiceDir()
                         , codeGeneratorProperties.getPackageConfig().getService()
                         , TableInfo::getServiceName
-                        , codeGeneratorProperties.getTemplateConfig().getService(), ConstVal.SERVICE);
+                        , codeGeneratorProperties.getTemplateConfig().getService()
+                        , StrUtil.blankToDefault(customName, ConstVal.SERVICE));
             case SERVICE_IMPL:
                 return getFileConfigAndInitPkg(codeGeneratorProperties.getPackageConfig().getServiceImplDir()
                         , codeGeneratorProperties.getPackageConfig().getServiceImpl()
                         , TableInfo::getServiceImplName
-                        , codeGeneratorProperties.getTemplateConfig().getServiceImpl(), ConstVal.SERVICE_IMPL);
+                        , codeGeneratorProperties.getTemplateConfig().getServiceImpl()
+                        , StrUtil.blankToDefault(customName, ConstVal.SERVICE_IMPL));
             case CONTROLLER:
                 return getFileConfigAndInitPkg(codeGeneratorProperties.getPackageConfig().getControllerDir()
                         , codeGeneratorProperties.getPackageConfig().getController()
                         , TableInfo::getControllerName
-                        , codeGeneratorProperties.getTemplateConfig().getController(), ConstVal.CONTROLLER);
+                        , codeGeneratorProperties.getTemplateConfig().getController()
+                        , StrUtil.blankToDefault(customName, ConstVal.CONTROLLER));
             default:
                 return null;
         }
@@ -293,7 +298,7 @@ public class FreemarkerTemplateEngineExt extends FreemarkerTemplateEngine {
 
     private FileOutConfigExt getFileConfigAndInitPkg(String dir, String subPkg
             , Function<TableInfo, String> fileNameGetter, String templatePath, String pkgKey) {
-        // 模板路径被清空则不再跳过生成
+        // 模板路径被清空则不再生成
         if (StrUtil.isBlank(templatePath)) {
             return null;
         }

@@ -20,7 +20,7 @@ import ${pkg};
 @Getter
 @AllArgsConstructor
 </#if>
-<#if (deserializerType??) && deserializerType == 0 >
+<#if (deserializerType??)>
     <#if deserializerType == 0 && deserializerClassName?? && deserializerClassName?trim?length gt 0>
 @JSONType(deserializer = ${deserializerClassName}.class)
     </#if>

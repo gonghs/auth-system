@@ -44,7 +44,7 @@ public class EnumField {
 
     public boolean isNumber() {
         try {
-            return Class.forName(clazz).isAssignableFrom(Number.class);
+            return Number.class.isAssignableFrom(Class.forName(clazz));
         } catch (ClassNotFoundException e) {
             return false;
         }

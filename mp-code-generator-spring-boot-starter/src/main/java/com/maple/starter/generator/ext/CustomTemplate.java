@@ -25,7 +25,11 @@ public class CustomTemplate {
      */
     private TemplateType templateType = TemplateType.ENTITY;
     /**
-     * 文件和类名
+     * 模板名 以模板名称作为自定义路径的key
      */
-    private String name = "%sReqDTO";
+    private String name;
+    /**
+     * 生成类名
+     */
+    private String className = "%sReqDTO";
 }
