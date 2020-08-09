@@ -160,7 +160,7 @@ public class CodeGeneratorProperties {
         /**
          * 类实现接口 允许使用%s占位 将使用字段列表中类型为code的className替换 例如com.maple.BaseEnum<%s>
          */
-        private String implementInterface = "com.maple.BaseEnum<%s>";
+        private String implementInterface = "com.maple.server.common.enums.BaseEnum";
         /**
          * 枚举模板路径
          */
@@ -174,7 +174,7 @@ public class CodeGeneratorProperties {
         /**
          * 反序列化类
          */
-        private String deserializerClass = "com.maple.EnumDeserializer";
+        private String deserializerClass = "com.maple.server.common.enums.EnumDeserializer";
         /**
          * 字段列表配置
          */

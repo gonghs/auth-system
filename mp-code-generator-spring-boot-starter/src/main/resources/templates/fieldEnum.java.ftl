@@ -29,7 +29,7 @@ import ${pkg};
     </#if>
 </#if>
 <#if (interface??) && interface?trim?length gt 0>
-public enum ${field.customMap.enumCapitalName} implement ${interface} {
+public enum ${field.customMap.enumCapitalName} implements ${interface} {
 <#else>
 public enum ${field.customMap.enumCapitalName} {
 </#if>
@@ -53,6 +53,6 @@ public enum ${field.customMap.enumCapitalName} {
      * ${param.desc}
      */
     </#if>
-    private ${param.className} ${param.name};
+    private final ${param.className} ${param.name};
     </#list>
 }
