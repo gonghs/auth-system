@@ -2,8 +2,8 @@ package com.maple.starter.generator.ext;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.map.MapBuilder;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.generator.InjectionConfig;
 import com.baomidou.mybatisplus.generator.config.ConstVal;
@@ -34,7 +34,12 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class FreemarkerTemplateEngineExt extends FreemarkerTemplateEngine {
-    static Pattern commonPattern = Pattern.compile("([0-9]{1,2}:[^,]*?,)*?([0-9]{1,2}:[^,]*?)(?=;)");
+    static Pattern commonPattern = Pattern.compile("#E\\{.*?}");
+    private static final String COMMENT_BEGIN = "#E{";
+    private static final String COMMENT_END = "}";
+    private static final String ENUM_NAME_BEGIN = "(";
+    private static final String ENUM_NAME_END = ")";
+
     private CodeGeneratorProperties codeGeneratorProperties;
     private CodeGeneratorProperties.EnumConfig enumConfig;
 
@@ -64,6 +69,7 @@ public class FreemarkerTemplateEngineExt extends FreemarkerTemplateEngine {
 
     /**
      * 生成枚举类并向ObjectMap初始化字段枚举相关数据
+     * 注释满足格式#E{} 则生成一个枚举类 默认枚举名自动翻译 内容为[码值](枚举名):[描述]:[字段]...,[码值]:[描述]:[字段]...
      *
      * @return objectMap 生成参数
      */
@@ -72,42 +78,20 @@ public class FreemarkerTemplateEngineExt extends FreemarkerTemplateEngine {
         if (!enumConfig.isEnabled() || StrUtil.isBlank(enumConfig.getTemplatePath())) {
             return objectMap;
         }
-        // 注释满足格式[码值]:[描述],[码值]:[描述]; 则生成一个枚举类
         if (CollUtil.isEmpty(tableInfo.getFields())) {
             return objectMap;
         }
-        // 根据类型排序 保证有code则code类型在首位 未定义默认值的数据
-        List<EnumField> enumFieldList =
-                this.enumConfig.getFields().stream()
-                        .filter(item -> StrUtil.isBlank(item.getValue()))
-                        .sorted(Comparator.comparingInt(item -> item.getType().ordinal())).collect(Collectors.toList());
-        // 定义了默认值的数组
-        List<EnumField> defaultValueEnumFieldList =
-                this.enumConfig.getFields().stream()
-                        .filter(item -> StrUtil.isNotBlank(item.getValue()))
-                        .sorted(Comparator.comparingInt(item -> item.getType().ordinal())).collect(Collectors.toList());
         for (TableField field : tableInfo.getFields()) {
+            // 注释满足格式#E{} 则生成一个枚举类 默认枚举名自动翻译 内容为[码值](枚举名):[描述]:[字段]...,[码值]:[描述]:[字段]...
             Matcher matcher = commonPattern.matcher(field.getComment());
             if (!matcher.find()) {
                 continue;
             }
 
             // 搜集枚举数组
-            List<Map<String, Object>> enumList =
-                    StrUtil.splitTrim(matcher.group(0), SymbolConst.COMMA).stream().filter(str ->
-                            str.split(SymbolConst.COLON).length == enumFieldList.size()).map(str ->
-                    {
+            List<Map<String, Object>> enumList = getEnumListByComment(field
+                    , StrUtil.subBetween(matcher.group(0), COMMENT_BEGIN, COMMENT_END));
 
-                        String[] codeAndParamArr = str.split(SymbolConst.COLON);
-                        for (int i = 0; i < codeAndParamArr.length; i++) {
-                            enumFieldList.get(i).setValue(codeAndParamArr[i]);
-                        }
-                        // 参数
-                        return MapUtil.<String, Object>builder().put("params"
-                                , CollUtil.addAll(enumFieldList, defaultValueEnumFieldList))
-                                // 枚举名 默认值为
-                                .put("name", getEnumName(field, codeAndParamArr[0], codeAndParamArr[1])).build();
-                    }).collect(Collectors.toList());
             try {
                 String enumCapitalName = String.format(this.enumConfig.getEnumName(), field.getCapitalName());
                 // 枚举文件配置
@@ -116,46 +100,105 @@ public class FreemarkerTemplateEngineExt extends FreemarkerTemplateEngine {
                         , tableI -> enumCapitalName, this.enumConfig.getTemplatePath()
                         , "Enum");
                 Objects.requireNonNull(enumConfig);
-                field.setColumnType(new ColumnTypeExt(enumCapitalName, enumConfig.getImportPkgWithFileName(tableInfo)));
-                // 枚举字段信息 用于实体生成 导入依赖和更改字段类型
-                Map<String, Object> enumFieldMap = MapUtil.<String, Object>builder()
-                        .put("enumPkg", field.getColumnType().getPkg())
-                        .put("enumCapitalName", enumCapitalName)
-                        .build();
-
-                if (CollUtil.isEmpty(field.getCustomMap())) {
-                    field.setCustomMap(enumFieldMap);
-                } else {
-                    field.getCustomMap().putAll(enumFieldMap);
-                }
-                Collection<EnumField> allEnumFieldList = CollUtil.addAll(enumFieldList,
-                        defaultValueEnumFieldList);
-                // 为了防止配置覆盖 手动生成这部分 不放入配置列表
-                MapBuilder<String, Object> enumObjectMap = MapUtil.<String, Object>builder()
-                        .put("author", objectMap.get("author"))
-                        .put("date", DateUtil.format(new Date(), "yyyy-MM-dd"))
-                        .put("package", objectMap.get("package"))
-                        .put("enumFieldList", allEnumFieldList)
-                        // 搜集需要导入的包名
-                        .put("import", getImportPkg(allEnumFieldList))
-                        .put("field", field)
-                        .put("enumList", enumList)
-                        .put("lombokModel", this.enumConfig.isLombokModel())
-                        .put("deserializerType", this.enumConfig.getDeserializerType().ordinal())
-                        // 将接口占位符替换为 code类型字段的类名
-                        .put("deserializerClassName",
-                                getClassName(this.enumConfig.getDeserializerClass()))
-                        .put("interface", getClassName(StrUtil.replace(this.enumConfig.getImplementInterface(), "%s",
-                                enumFieldList.stream().filter(item -> Objects.equals(item.getType(),
-                                        EnumField.EnumFieldTypeEnum.CODE)).findFirst().map(EnumField::getClassName).orElse("Object"))));
-
-                createAndWriteFile(enumObjectMap.build(), enumConfig, tableInfo);
+                fillFieldEnumInfo(tableInfo, field, enumConfig);
+                ;
+                Map<String, Object> enumObjectMap = getEnumObjectMap(objectMap, enumList, field);
+                createAndWriteFile(enumObjectMap, enumConfig, tableInfo);
             } catch (Exception e) {
                 log.error("生成枚举错误!!!", e);
             }
         }
         genCustomTemplate(tableInfo, objectMap);
         return objectMap;
+    }
+
+    private List<Map<String, Object>> getEnumListByComment(TableField field, String comment) {
+        // 根据类型排序 保证有code则code类型在首位 未定义默认值的数据
+        List<EnumField> enumFieldList =
+                this.enumConfig.getFields().stream()
+                        .filter(item -> StrUtil.isBlank(item.getValue())).collect(Collectors.toList());
+        // 定义了默认值的数组
+        List<EnumField> defaultValueEnumFieldList =
+                this.enumConfig.getFields().stream()
+                        .filter(item -> StrUtil.isNotBlank(item.getValue())).collect(Collectors.toList());
+        return StrUtil.splitTrim(comment, SymbolConst.COMMA).stream().filter(str ->
+                str.split(SymbolConst.COLON).length == enumFieldList.size()).map(str ->
+        {
+            // 深克隆一份 保证不被覆盖
+            List<EnumField> enumFields = ObjectUtil.cloneByStream(enumFieldList);
+            String[] codeAndParamArr = str.split(SymbolConst.COLON);
+            String name = "";
+            for (int i = 0; i < codeAndParamArr.length; i++) {
+                String codeAndParam = codeAndParamArr[i];
+                // 若第一个序列包含()则使用()中的内容做为名称
+                if (i == 0 && (StrUtil.isNotBlank(name = StrUtil.subBetween(codeAndParam, ENUM_NAME_BEGIN,
+                        ENUM_NAME_END)))) {
+                    enumFields.get(i).setValue(StrUtil.subBefore(codeAndParam, ENUM_NAME_BEGIN, false));
+                    continue;
+                }
+
+                enumFields.get(i).setValue(codeAndParam);
+            }
+            // 参数
+            return MapUtil.<String, Object>builder().put("params"
+                    , CollUtil.addAll(enumFields, defaultValueEnumFieldList))
+                    // 枚举名 默认值为
+                    .put("name", StrUtil.isBlank(name) ? getEnumName(field, codeAndParamArr[0],
+                            codeAndParamArr[1]) : StrUtil.toUnderlineCase(name).toUpperCase()).build();
+        }).collect(Collectors.toList());
+    }
+
+    /**
+     * 组装枚举生成数据
+     *
+     * @param objectMap 原objectMap
+     * @param enumList  枚举列表
+     * @param field     字段信息
+     * @return 枚举生成数据
+     */
+    private Map<String, Object> getEnumObjectMap(Map<String, Object> objectMap, List<Map<String, Object>> enumList,
+                                                 TableField field) {
+        return MapUtil.<String, Object>builder()
+                .put("author", objectMap.get("author"))
+                .put("date", DateUtil.format(new Date(), "yyyy-MM-dd"))
+                .put("package", objectMap.get("package"))
+                .put("enumFieldList", this.enumConfig.getFields())
+                // 搜集需要导入的包名
+                .put("import", getImportPkg(this.enumConfig.getFields()))
+                .put("field", field)
+                .put("enumList", enumList)
+                .put("lombokModel", this.enumConfig.isLombokModel())
+                .put("deserializerType", this.enumConfig.getDeserializerType().ordinal())
+                // 将接口占位符替换为 code类型字段的类名
+                .put("deserializerClassName",
+                        getClassName(this.enumConfig.getDeserializerClass()))
+                .put("interface", getClassName(StrUtil.replace(this.enumConfig.getImplementInterface(), "%s",
+                        this.enumConfig.getFields().stream().filter(item -> Objects.equals(item.getType(),
+                                EnumField.EnumFieldTypeEnum.CODE)).findFirst().map(EnumField::getClassName).orElse(
+                                "Object")))).build();
+    }
+
+    /**
+     * 填充枚举字段信息
+     *
+     * @param tableInfo  表信息
+     * @param field      字段信息
+     * @param enumConfig 枚举文件配置
+     */
+    private void fillFieldEnumInfo(TableInfo tableInfo, TableField field, FileOutConfigExt enumConfig) {
+        String enumCapitalName = String.format(this.enumConfig.getEnumName(), field.getCapitalName());
+        field.setColumnType(new ColumnTypeExt(enumCapitalName, enumConfig.getImportPkgWithFileName(tableInfo)));
+        // 枚举字段信息 用于实体生成 导入依赖和更改字段类型
+        Map<String, Object> enumFieldMap = MapUtil.<String, Object>builder()
+                .put("enumPkg", field.getColumnType().getPkg())
+                .put("enumCapitalName", enumCapitalName)
+                .build();
+
+        if (CollUtil.isEmpty(field.getCustomMap())) {
+            field.setCustomMap(enumFieldMap);
+        } else {
+            field.getCustomMap().putAll(enumFieldMap);
+        }
     }
 
     /**

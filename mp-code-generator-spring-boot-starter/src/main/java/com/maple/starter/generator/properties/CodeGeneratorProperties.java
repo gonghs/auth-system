@@ -12,6 +12,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -58,15 +59,21 @@ public class CodeGeneratorProperties {
     @Setter
     @Accessors(chain = true)
     public class StrategyConfig extends com.baomidou.mybatisplus.generator.config.StrategyConfig {
-        private boolean entityLombokModel = true;
-        private String[] superEntityColumns = {"id", "desc", "modify_time", "create_time", "data_status"};
-        private NamingStrategy naming = NamingStrategy.underline_to_camel;
-        private NamingStrategy columnNaming = NamingStrategy.underline_to_camel;
-        private String superEntityClass = "com.maple.dto.base.BaseDTO";
-        private String superMapperClass = "com.baomidou.mybatisplus.core.mapper.BaseMapper";
-        private String superServiceClass = "com.baomidou.mybatisplus.extension.service.IService";
-        private String superServiceImplClass = "com.baomidou.mybatisplus.extension.service.impl.ServiceImpl";
-        private String superControllerClass = "com.maple.controller.BaseController";
+        {
+            /**
+             * 设置默认值
+             */
+            setEntityLombokModel(true);
+            setSuperEntityColumns("id", "desc", "modify_time", "create_time", "data_status");
+            setNaming(NamingStrategy.underline_to_camel);
+            setColumnNaming(NamingStrategy.underline_to_camel);
+            setSuperEntityClass("com.maple.dto.base.BaseDTO");
+            setSuperMapperClass("com.baomidou.mybatisplus.core.mapper.BaseMapper");
+            setSuperServiceClass("com.baomidou.mybatisplus.extension.service.IService");
+            setSuperServiceImplClass("com.baomidou.mybatisplus.extension.service.impl.ServiceImpl");
+            setSuperControllerClass("com.maple.controller.BaseController");
+        }
+
 
         @Override
         public String[] getInclude() {
@@ -98,8 +105,8 @@ public class CodeGeneratorProperties {
          */
         private Map<String, String> customPath =
                 MapUtil.builder("serviceImpl", PathStructConst.GLOBAL + "/impl")
-                        .put("ReqDTO",PathStructConst.GLOBAL + "/req")
-                        .put("RespDTO",PathStructConst.GLOBAL + "/resp")
+                        .put("ReqDTO", PathStructConst.GLOBAL + "/req")
+                        .put("RespDTO", PathStructConst.GLOBAL + "/resp")
                         .build();
 
         @Override
@@ -174,6 +181,10 @@ public class CodeGeneratorProperties {
         private List<EnumField> fields = CollUtil.newArrayList(EnumField.code("java.lang.Integer", "value", "枚举值")
                 , EnumField.other("java.lang.String", "desc", "枚举描述"));
 
+
+        public List<EnumField> getFields() {
+            return CollUtil.sort(fields, Comparator.comparingInt(item -> item.getType().ordinal()));
+        }
 
         public enum DeserializerTypeEnum {
             FAST_JSON, JACKSON,

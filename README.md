@@ -42,16 +42,16 @@ mp-shiro-spring-boot-starter(shiro starter)
 ```mysql
 create table test
 (
-    id          int         not null
-        primary key,
-    username    varchar(30) null comment '用户名',
-    audit_status      int         null comment '状态 1:审核通过,0:禁用;',
-    create_user varchar(30) null comment '创建人',
-    create_time date        null comment '创建时间',
-    modify_user varchar(30) null comment '修改人',
-    modify_time date        null comment '修改时间',
-    data_status varchar(30) null comment '数据状态 1:有效,0:无效;'
-);
+    id           varchar(32)         not null
+        primary key comment '主键',
+    username     varchar(30) null comment '用户名',
+    audit_status int         null comment '状态 #E{1(UN_SUBMIT):未提交,2:待审核,3:审核中,4:审核通过,5:审核不通过}',
+    create_user  varchar(30) null comment '创建人',
+    create_time  date        null comment '创建时间',
+    modify_user  varchar(30) null comment '修改人',
+    modify_time  date        null comment '修改时间',
+    data_status  int null comment '数据状态 #E{1:有效,0:无效}'
+) comment '测试表';
 ```
 配置前缀为mp.tool.generator,数据库配置默认由spring.datasource或spring.datasource.druid下读取
 为了方便配置读取需要借助spring注入运行
@@ -110,7 +110,9 @@ hx:
         - name: respDto
           template-type: service
           class-name: '%sRespDTO'  
-    # 枚举生成相关配置 由于是额外功能 因此单独列一个配置 根据注释生成枚举 基本格式为 code:desc,code:desc; 例如 1:有效,0:无效;
+     
+    #枚举生成相关配置 由于是额外功能 因此单独列一个配置 根据注释生成枚举 基本格式为 注释满足格式#E{} 则生成一个枚举类 默认枚举名自动翻译 内容为[码值](枚举名):[描述]:[字段]...,[码值]:[描述]:[字段]... 
+    # 例如 #E{1(VALID):有效,0:无效};
     enum-config:
       # 是否开启 默认不开启
       enabled: true

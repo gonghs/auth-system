@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
+
 /**
  * 枚举字段配置
  *
@@ -20,7 +22,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class EnumField {
+public class EnumField implements Serializable {
     /**
      * 字段类型 至少需要有一条数据指定类型为code
      */
