@@ -47,6 +47,8 @@ public class ColumnInterceptor extends AbstractSqlParserHandler implements Inter
 
         // SQL 解析
         this.sqlParser(metaObject);
+
+
         return invocation.proceed();
     }
 

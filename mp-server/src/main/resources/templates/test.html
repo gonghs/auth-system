@@ -52,10 +52,18 @@
                                     </div>
 
                                     <div class="am-u-sm-12 am-form-group">
-                                        <label for="desc" class="am-u-sm-3 am-form-label">时间 </label>
+                                        <label for="desc" class="am-u-sm-3 am-form-label">开始时间 </label>
                                         <div class="am-u-sm-9">
-                                            <input type="text" class="tpl-form-input am-form-field" id="datetimepicker"
-                                                   data-validation-message="角色描述有误" required>
+                                            <input type="text" class="tpl-form-input am-form-field" id="startTime"
+                                                   data-validation-message="开始时间有误" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="am-u-sm-12 am-form-group">
+                                        <label for="desc" class="am-u-sm-3 am-form-label">结束时间 </label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" class="tpl-form-input am-form-field" id="endTime"
+                                                   data-validation-message="结束时间有误" required>
                                         </div>
                                     </div>
                                     <button type="button" class="am-btn am-btn-primary" onclick="save(this)">
@@ -80,8 +88,7 @@
         monthsShort: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
         today: "今天",
         suffix: [],
-        meridiem: ["上午", "下午"],
-        rtl: true // 从右向左书写的语言你可以使用 rtl: true 来设置
+        meridiem: ["上午", "下午"]
     };
 
     $(function () {
@@ -90,9 +97,17 @@
             // options
         });
         $('.am-modal').modal('toggle');
-        $('#datetimepicker').datetimepicker({
+        $('#startTime').datetimepicker({
             format: 'yyyy-mm-dd hh:ii',
             language:  'zh-CN'
+        }).on('changeDate', function(ev){
+            $('#endTime').datetimepicker('setStartDate', ev.date);
+        });
+        $('#endTime').datetimepicker({
+            format: 'yyyy-mm-dd hh:ii',
+            language:  'zh-CN'
+        }).on('changeDate', function(ev){
+            $('#startTime').datetimepicker('setEndDate', ev.date);
         });
     })
 
