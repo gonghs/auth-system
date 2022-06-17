@@ -21,7 +21,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <model.version>${project.version}</model.version>
         <spring-boot.version>2.1.7.RELEASE</spring-boot.version>
-        <fastjson.version>1.2.59</fastjson.version>
+        <fastjson.version>1.2.83</fastjson.version>
         <okhttp.version>4.5.0</okhttp.version>
         <commons-collection.version>4.4</commons-collection.version>
         <knife4j.version>2.0.4</knife4j.version>
